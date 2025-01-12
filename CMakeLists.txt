@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25.1)
-project(lab)
+project(outlab1)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(lab main.cpp)
+add_executable(outlab1 main.cpp)
