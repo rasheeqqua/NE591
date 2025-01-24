@@ -1,15 +1,14 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <iomanip>
-#include "function.cpp"
 #include "polynomial.cpp"
+#include "function.cpp"
 
-// Step #8
+// Create m evaluation points between a and b
 std::vector<double> createEvaluationPoints(int m, double a, double b) {
     std::vector<double> evalPoints(m);
     if (m == 1) {
@@ -18,13 +17,13 @@ std::vector<double> createEvaluationPoints(int m, double a, double b) {
     }
     double step = (b - a) / (m - 1);
     for (int i = 0; i < m; ++i) {
-        evalPoints[i] = std::round((a + i * step) * 10) / 10.0;
+        evalPoints[i] = a + i * step;
     }
     return evalPoints;
 }
 
 int main() {
-    // Step #1
+    // Step #1: Program introduction
     std::cout << "*********************************************************\n";
     std::cout << "    NE-591 IN-LAB ASSIGNMENT 2\n";
     std::cout << "    Author  : Hasibul H. Rasheeq, NCSU\n";
@@ -32,20 +31,20 @@ int main() {
     std::cout << "    Purpose : Lagrange Interpolation\n";
     std::cout << "*********************************************************\n\n";
 
-    // Step #2
+    // Step #2: Get n and m from the user
     int n, m;
     std::cout << "Enter number of interpolation points (n): ";
     std::cin >> n;
     std::cout << "Enter number of evaluation points (m): ";
     std::cin >> m;
 
-    // Step #3
+    // Step #3: Validate n and m
     if (n < 1 || m < 1) {
         std::cerr << "ERROR: You cannot provide non-positive values for n or m.\n";
         return 1;
     }
 
-    // Step #4
+    // Step #4: Get the x_i values from the user
     std::vector<double> userX(n);
     std::cout << "Please enter your " << n << " interpolation points in ascending order:\n";
     for (int i = 0; i < n; ++i) {
@@ -53,18 +52,20 @@ int main() {
     }
     std::sort(userX.begin(), userX.end());
 
-    // Step #5
+    // Step #5: Choose data input method
     int choice;
     std::cout << "\nOption 1: Read ALL (x, y) pairs from a text file.\n";
     std::cout << "Option 2: Use the user-provided x-values and evaluate f(x).\n";
     std::cout << "Enter your choice (1 or 2): ";
     std::cin >> choice;
 
-    std::map<double, double> xy;
-    double a, b;
+    std::vector<double> x; // x_i values
+    std::vector<double> y; // y_i values
+    double a, b; // interval [a, b]
 
-    // Step #6
+    // Step #6: Read y_i values
     if (choice == 1) {
+        std::vector<std::pair<double, double>> dataPairs;
         std::string filename;
         std::cout << "Enter the name of the file: ";
         std::cin >> filename;
@@ -83,99 +84,117 @@ int main() {
             std::string right = line.substr(pos + 1);
             double xx = std::stod(left);
             double yy = std::stod(right);
-            xy[xx] = yy;
+            dataPairs.emplace_back(xx, yy);
         }
         file.close();
-        if (xy.empty()) {
+
+        if (dataPairs.empty()) {
             std::cerr << "ERROR: The file appears to have no valid (x,y) data!\n";
             return 1;
         }
 
-        a = xy.begin()->first;
-        b = xy.rbegin()->first;
+        // Sort data pairs by x values
+        std::sort(dataPairs.begin(), dataPairs.end());
+
+        // Separate x and y values
+        for (const auto& pair : dataPairs) {
+            x.push_back(pair.first);
+            y.push_back(pair.second);
+        }
+
+        a = x.front();
+        b = x.back();
     } else if (choice == 2) {
-        std::vector<double> computedY = evaluate(userX);
-        for (size_t i = 0; i < userX.size(); ++i) {
-            xy[userX[i]] = computedY[i];
-        }
+        x = userX; // x_i values provided by the user
+        y = evaluate(userX); // y_i values computed from the function
+
         std::cout << "\nValues computed from the function:\n";
-        for (auto &kv : xy) {
-            std::cout << "x = " << kv.first << ", y = " << kv.second << "\n";
+        for (size_t i = 0; i < x.size(); ++i) {
+            std::cout << "x = " << x[i] << ", y = " << y[i] << "\n";
         }
-        a = userX.front();
-        b = userX.back();
+
+        a = x.front();
+        b = x.back();
     } else {
         std::cerr << "ERROR: Invalid choice.\n";
         return 1;
     }
 
-    // Step #7
+    // Step #7: Confirm data and proceed
     std::cout << "\nAll input data looks correct. Proceeding...\n";
     std::cout << "Your n = " << n << ", m = " << m << "\n";
 
     if (choice == 1) {
-        std::cout << "You chose Option 1: we have " << xy.size() << " points read from file.\n";
+        std::cout << "You chose Option 1: we have " << x.size() << " points read from file.\n";
     } else {
-        std::cout << "You chose Option 2: we have " << xy.size() << " points from userX/evaluate.\n";
+        std::cout << "You chose Option 2: we have " << x.size() << " points from userX/evaluate.\n";
     }
 
     std::cout << "Interpolation interval is [" << a << ", " << b << "]\n\n";
-    std::cout << "Lagrange Interpolation will be implemented here (placeholder)\n\n";
+    std::cout << "Lagrange Interpolation will be implemented here.\n\n";
 
-    // Step #8
+    // Step #8: Create evaluation points
     std::vector<double> xEval = createEvaluationPoints(m, a, b);
 
-    // Step #9
+    // Step #9: Compute and display interpolated values and errors
     const int wIndex = 5;
     const int wX = 12;
     const int wY = 12;
     const int wInterp = 12;
-    const int wError = 12;
-    if (choice == 1) {
-        std::cout << "--------------------------------------------------------------\n";
-        std::cout << std::setw(wIndex) << "i"
-                  << std::setw(wX) << "x(i)"
-                  << std::setw(wY) << "y(file)"
-                  << std::setw(wInterp) << "Interp"
-                  << std::setw(wError) << "Error"
-                  << "\n";
-        std::cout << "--------------------------------------------------------------\n";
-        for (int i = 0; i < m; ++i) {
-            double xx = xEval[i];
-            std::cout << std::setw(wIndex) << (i + 1);
-            std::cout << std::setw(wX) << xx;
-            auto it = xy.find(xx);
-            if (it != xy.end()) {
-                std::cout << std::setw(wY) << it->second;
+    const int wError = 15; // Increased width to accommodate scientific notation
+    const double EPSILON = 1e-9; // For floating-point comparison
+
+    std::cout << "------------------------------------------------------------------\n";
+    std::cout << std::setw(wIndex) << "i"
+              << std::setw(wX) << "x(i)"
+              << std::setw(wY) << (choice == 1 ? "y(file)" : "f(x)")
+              << std::setw(wInterp) << "Interp"
+              << std::setw(wError) << "Error"
+              << "\n";
+    std::cout << "------------------------------------------------------------------\n";
+
+    for (int i = 0; i < m; ++i) {
+        double xx = xEval[i];
+        std::cout << std::setw(wIndex) << (i + 1);
+        std::cout << std::setw(wX) << xx;
+
+        double Lx = lagrangeInterpolate(xx, x, y); // Interpolated value
+
+        if (choice == 2) {
+            // Option 2: Compute f(xx) and error for all points
+            double yActual = exp(xx);
+            double error = yActual - Lx;
+            std::cout << std::setw(wY) << yActual;
+            std::cout << std::setw(wInterp) << Lx;
+            std::cout << std::setw(wError) << std::scientific << std::setprecision(6) << error << "\n";
+            std::cout << std::fixed;
+        } else {
+            // Option 1: Only compute error if xx matches x_i
+            bool isDataPoint = false;
+            double yActual = 0.0;
+            for (size_t k = 0; k < x.size(); ++k) {
+                if (std::abs(xx - x[k]) < EPSILON) {
+                    isDataPoint = true;
+                    yActual = y[k];
+                    break;
+                }
+            }
+
+            if (isDataPoint) {
+                double error = yActual - Lx;
+                std::cout << std::setw(wY) << yActual;
+                std::cout << std::setw(wInterp) << Lx;
+                std::cout << std::setw(wError) << std::scientific << std::setprecision(6) << error << "\n";
+                std::cout << std::fixed;
             } else {
                 std::cout << std::setw(wY) << " ";
+                std::cout << std::setw(wInterp) << Lx;
+                std::cout << std::setw(wError) << "-" << "\n";
             }
-            double Lx = lagrangeInterpolate(xx);
-            std::cout << std::setw(wInterp) << Lx;
-            std::cout << std::setw(wError) << "-";
-            std::cout << "\n";
-        }
-    } else {
-        std::cout << "---------------------------------------------\n";
-        std::cout << std::setw(wIndex) << "i"
-                  << std::setw(wX) << "x(i)"
-                  << std::setw(wY) << "f(x)"
-                  << std::setw(wInterp) << "Interp"
-                  << "\n";
-        std::cout << "---------------------------------------------\n";
-        for (int i = 0; i < m; ++i) {
-            double xx = xEval[i];
-            std::cout << std::setw(wIndex) << (i + 1);
-            std::cout << std::setw(wX) << xx;
-            double fx = std::exp(xx);
-            std::cout << std::setw(wY) << fx;
-            double Lx = lagrangeInterpolate(xx);
-            std::cout << std::setw(wInterp) << Lx;
-            std::cout << "\n";
         }
     }
 
-    // Step #10
+    // Step #10: Finish
     std::cout << "\nProgram finished.\n";
     return 0;
 }

@@ -1,16 +1,18 @@
 #include <vector>
-#include <cmath>
 
-// A Module source code where you will implement
-// Lagrange Interpolation Polynomials in Outlab 2.
-// For now, just a placeholder function signature.
-//
-// In Outlab 2, you would typically add parameters like:
-//   (double xEval, const std::vector<double>& x, const std::vector<double>& y)
-// so you can properly compute the Lagrange polynomial at xEval.
-//
-// For now, we just return 0.0 as a stub.
+double lagrangeInterpolate(double xEval, const std::vector<double>& x, const std::vector<double>& y) {
+    int n = x.size();
+    double Lx = 0.0;
 
-double lagrangeInterpolate(double x) {
-    return 0.0;
+    for (int i = 0; i < n; ++i) {
+        double term = y[i];
+        for (int j = 0; j < n; ++j) {
+            if (j != i) {
+                term *= (xEval - x[j]) / (x[i] - x[j]);
+            }
+        }
+        Lx += term;
+    }
+
+    return Lx;
 }
