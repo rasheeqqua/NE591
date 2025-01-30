@@ -1,37 +1,58 @@
-/*--------------------In-Lab Assignment 3--------------------*/
+/*--------------------Out-Lab Assignment 3--------------------*/
 /*
- * Created by Hasibul Hossain Rasheeq on Sunday, 1/24/25.
+ * Created by Hasibul H. Rasheeq on Thursday, 1/30/25.
 */
-
 #include <iostream>
 #include <ctime>
-#include "CompositeTrapezoidal.cpp"
+#include <fstream> // Included for file operations
 #include "CompositeSimpson.cpp"
+#include "CompositeTrapezoidal.cpp"
+#include "ExactIntegral.cpp"
+#include "GaussianQuadrature.cpp"
 
 int main() {
-    std::cout << "Numerical Integration Program\n";
-    std::cout << "Author: Hasibul H. Rasheeq, NC State University\n";
+    // Open the output file
+    std::ofstream outfile("output.txt");
+    if (!outfile) {
+        std::cerr << "Error: Cannot open output.txt for writing." << std::endl;
+        return 1;
+    }
+
+    // Write initial information to the output file
+    outfile << "Numerical Integration Program\n";
+    outfile << "Author: Hasibul H. Rasheeq, NC State University\n";
 
     // Task 1
     time_t now = time(0);
     char* dt = ctime(&now);
-    std::cout << "Date: " << dt << "\n";
+    outfile << "Date: " << dt << "\n";
 
-    std::cout << "This program computes the approximate integral using numerical quadrature rules\n";
-    std::cout << "-----------------------------------------------------------------------------------\n\n";
+    outfile << "This program computes the approximate integral using numerical quadrature rules\n";
+    outfile << "-----------------------------------------------------------------------------------\n\n";
 
     // Task 2
     double a, b;
     int m, selector;
 
+    // User inputs remain on the console
     std::cout << "Enter the lower limit of integration (a): ";
     std::cin >> a;
 
     std::cout << "Enter the upper limit of integration (b): ";
     std::cin >> b;
 
+    if (a >= b) {
+        std::cout << "Error: The lower limit 'a' must be less than the upper limit 'b'.\n";
+        return 1;
+    }
+
     std::cout << "Enter the number of intervals (m): ";
     std::cin >> m;
+
+    if (m <= 0) {
+        std::cout << "Error: The number of intervals 'm' must be a positive integer.\n";
+        return 1;
+    }
 
     std::cout << "Select the Quadrature Rule:\n";
     std::cout << "1. Composite Trapezoidal Rule\n";
@@ -39,41 +60,30 @@ int main() {
     std::cout << "3. Gaussian Quadrature\n";
     std::cout << "Enter your choice (1-3): ";
     std::cin >> selector;
-
-    // Task 3
-    bool inputValid = true;
-
-    if (a >= b) {
-        std::cout << "Error: The lower limit 'a' must be less than the upper limit 'b'.\n";
-        inputValid = false;
-    }
-
-    if (m <= 0) {
-        std::cout << "Error: The number of intervals 'm' must be a positive integer.\n";
-        inputValid = false;
-    }
-
     if (selector < 1 || selector > 3) {
         std::cout << "Error: Invalid selection for the Quadrature Rule.\n";
-        inputValid = false;
+        return 1;
     }
 
-    if (!inputValid) {
-        std::cout << "Please correct the input data and try again.\n";
-        return 1; // Terminate the program due to invalid input
+    // Write confirmation and details first to the screen and then to the output file
+    std::cout << "All input data is correct. The output will be saved in output.txt file inside the build folder" <<
+        std::endl;
+    outfile << "All input data is correct. Proceeding with the computation.\n\n";
+    outfile << "Integration Interval: [" << a << ", " << b << "]\n";
+    outfile << "Number of Intervals (m): " << m << "\n";
+    outfile << "Selected Quadrature Rule: ";
+    switch (selector) {
+        case 1:
+            outfile << "Composite Trapezoidal Rule\n";
+            break;
+        case 2:
+            outfile << "Composite Simpson's Rule\n";
+            break;
+        case 3:
+            outfile << "Gauss-Legendre Quadrature\n";
+            break;
     }
-
-    std::cout << "All input data is correct. Proceeding with the computation.\n\n";
-    std::cout << "Integration Interval: [" << a << ", " << b << "]\n";
-    std::cout << "Number of Intervals (m): " << m << "\n";
-    std::cout << "Selected Quadrature Rule: ";
-    if (selector == 1)
-        std::cout << "Composite Trapezoidal Rule\n";
-    else if (selector == 2)
-        std::cout << "Composite Simpson's Rule\n";
-    else
-        std::cout << "Gaussian Quadrature\n";
-    std::cout << "----------------------------------------------------------\n\n";
+    outfile << "----------------------------------------------------------\n\n";
 
     // Task 4 implementation is in `integrand.cpp` file.
 
@@ -86,33 +96,41 @@ int main() {
         break;
     case 2:
         if (m % 2 != 0) {
-            std::cout << "Error: Simpson's Rule requires an even number of intervals.\n";
+            outfile << "Error: Simpson's Rule requires an even number of intervals.\n";
             return 1;
         }
         result = compositeSimpson(a, b, m);
         break;
     case 3:
-        std::cout << "Gauss-Legendre Quadrature not available yet.\n";
-        return 0; // Terminate execution as per the assignment
-    default:
-        std::cout << "Invalid selection.\n";
-        return 1;
+        result = gaussLegendreQuadrature(a, b, m);
+        break;
     }
 
+    double exactValue = exactIntegral(a, b);
+
     // Task 6
-    std::cout << "Integration Result\n";
-    std::cout << "------------------\n";
-    std::cout << "Integration Interval: [" << a << ", " << b << "]\n";
-    std::cout << "Number of Intervals (m): " << m << "\n";
-    std::cout << "Quadrature Rule Used: ";
-    if (selector == 1)
-        std::cout << "Composite Trapezoidal Rule\n";
-    else if (selector == 2)
-        std::cout << "Composite Simpson's Rule\n";
-    else
-        std::cout << "Gaussian Quadrature\n";
-    std::cout << "Actual value of integration of exp(x) over [0,4] is: 53.59819.\n";
-    std::cout << "Computed Value of the Integral: " << result << "\n";
+    outfile << "Integration Result\n";
+    outfile << "------------------\n";
+    outfile << "Integration Interval: [" << a << ", " << b << "]\n";
+    outfile << "Number of Intervals (m): " << m << "\n";
+    outfile << "Quadrature Rule Used: ";
+    switch (selector) {
+    case 1:
+        outfile << "Composite Trapezoidal Rule\n";
+        break;
+    case 2:
+        outfile << "Composite Simpson's Rule\n";
+        break;
+    case 3:
+        outfile << "Gauss-Legendre Quadrature\n";
+        break;
+    }
+    outfile << "Actual value of the integral: " << exactValue << "\n";
+    outfile << "Computed value of the integral: " << result << "\n";
+    outfile << "Error = Calculated value - Actual value = " << result - exactValue << "\n";
+
+    // Close the output file
+    outfile.close();
 
     return 0;
 }

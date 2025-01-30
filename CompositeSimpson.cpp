@@ -1,7 +1,7 @@
 //
-// Created by Hasibul H. Rasheeq on 1/24/25.
+// Created by Hasibul H. Rasheeq on 1/30/25.
 //
-
+#include "integrand.cpp"
 double compositeSimpson(double a, double b, int m) {
     double h = (b - a) / m;
     double sum = integrand(a) + integrand(b);

@@ -1,0 +1,9 @@
+Enter the lower limit of integration (a): -1
+Enter the upper limit of integration (b): 1
+Enter the number of intervals (m): 32
+Select the Quadrature Rule:
+1. Composite Trapezoidal Rule
+2. Composite Simpson's Rule
+3. Gaussian Quadrature
+Enter your choice (1-3): 2
+All input data is correct. The output will be saved in output.txt file inside the build folder

@@ -1,0 +1,22 @@
+Numerical Integration Program
+Author: Hasibul H. Rasheeq, NC State University
+Date: Thu Jan 30 14:46:36 2025
+
+This program computes the approximate integral using numerical quadrature rules
+-----------------------------------------------------------------------------------
+
+All input data is correct. Proceeding with the computation.
+
+Integration Interval: [-1, 1]
+Number of Intervals (m): 5
+Selected Quadrature Rule: Gauss-Legendre Quadrature
+----------------------------------------------------------
+
+Integration Result
+------------------
+Integration Interval: [-1, 1]
+Number of Intervals (m): 5
+Quadrature Rule Used: Gauss-Legendre Quadrature
+Actual value of the integral: 2.3504
+Computed value of the integral: 2.3504
+Error = Calculated value - Actual value = -7.08162e-10
