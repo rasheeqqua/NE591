@@ -5,9 +5,13 @@
 
 // Task 4
 double integrand(double x) {
-    if (x < 0.25) {
-        return exp(-x + 0.25); // For x in [-1, 0.25)
-    } else {
-        return exp(x - 0.25);  // For x in [0.25, 1]
-    }
+    return exp(x);
 }
+
+// double integrand(double x) {
+//     if (x < 0.25) {
+//         return exp(-x + 0.25); // For x in [-1, 0.25)
+//     } else {
+//         return exp(x - 0.25);  // For x in [0.25, 1]
+//     }
+// }

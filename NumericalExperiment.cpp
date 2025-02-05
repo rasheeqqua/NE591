@@ -27,7 +27,7 @@ int main() {
 
     // Vectors to store m or n values
     std::vector<int> m_values = {2, 4, 8, 16, 32};
-    std::vector<int> n_values = {1, 2, 3, 4, 5};
+    std::vector<int> n_values = {2, 3, 4, 5};
 
     // Headers
     outfile << "Results for Composite Trapezoidal Rule\n";
