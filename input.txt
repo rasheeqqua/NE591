@@ -1,33 +1,27 @@
-3
-3.0
-1.0 1.5
-1.0 1.0 1.0
--2.0 -6.0
-3.0
-1.0
-5.0
-10.0
+4 false
+3 -7 -2 2
+-3 5 1 0
+6 -4 0 -5
+-9 5 -5 12
+-9
+5
+7
+11
 
 Format of the input file:
 
-Line1: n = 4
+Line1: n = 4, usePivot = false
 
 Only the elements under the diagonal are being considered here.
 And we are assuming that all the elements in the diagonal have a value of `1`.
-Lower Triangular Matrix L:
-                1          0          0          0
-Line 2:        -1          1          0          0
-Line 3:         2         -5          1          0
-Line 4:        -3          8          3          1
-
-Upper Triangular Matrix U:
-Line 5:         3         -7         -2          2
-Line 6:         0         -2         -1          2
-Line 7:         0          0         -1          1
-Line 8:         0          0          0         -1
+Matrix A:
+Line 2:         3         -7         -2          2
+Line 3:        -3          5          1          0
+Line 4:         6         -4          0         -5
+Line 5:        -9          5         -5         12
 
 Right-Hand Side Vector b:
-Line 9:         -9
-Line 10:         5
-Line 11:         7
-Line 12:        11
+Line 6:         -9
+Line 7:         5
+Line 8:         7
+Line 9:        11
