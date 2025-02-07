@@ -1,0 +1,40 @@
+LUP Factorization Solution Program
+Author: Hasibul H. Rasheeq
+Affiliation: NC State University
+Date: Feb  7 2025
+----------------------------------------
+
+Lower Triangular Matrix L:
+         1          0          0          0          0 
+       0.8          1          0          0          0 
+       0.6       0.81          1          1          0 
+       0.4       0.62       0.83          1          0 
+       0.2       0.43       0.67       0.88          1
+
+Upper Triangular Matrix U:
+         5          1          2          3          4 
+         0        4.2       -0.6       -0.4       -0.2 
+         0          0       4.29      -0.48      -0.24 
+         0          0          0       4.44      -0.28 
+         0          0          0          0       4.69 
+
+Permutation Matrix P:
+         0          0          0          0          1 
+         0          0          0          1          0 
+         0          0          1          0          0 
+         0          1          0          0          0 
+         1          0          0          0          0 
+
+Right-Hand Side Vector b:
+       1.1
+       1.2
+       1.3
+       1.4
+       1.5
+
+Solution Vector x:
+x[1] =   0.167089
+x[2] =  0.0666525
+x[3] =  0.0666525
+x[4] =  0.0668778
+x[5] =  0.0659904

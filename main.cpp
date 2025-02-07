@@ -1,30 +1,85 @@
-/*--------------------Inlab4--------------------*/
+/*--------------------Inlab5--------------------*/
 /*
- * Created by Hasibul Hossain Rasheeq on Friday, 1/31/25.
+ * Created by Hasibul Hossain Rasheeq on Friday, 02/07/25.
 */
 
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include <string>
 #include "substitution.cpp"
+#include "RowSwap.cpp"
 
-bool checkInputData(int n, const std::vector<std::vector<double>>& U, std::ofstream& outputFile) {
+bool checkInputData(int n,
+                    const std::vector<std::vector<double>>& L,
+                    const std::vector<std::vector<double>>& U,
+                    const std::vector<std::vector<double>>& P,
+                    std::ofstream& outputFile) {
     bool valid = true;
+
+    // Check L matrix diagonal
     for (int i = 0; i < n; ++i) {
-        if (U[i][i] == 0.0) {
-            outputFile << "Error: Zero detected on the diagonal of U at position (" << i + 1 << "," << i + 1 << ").\n";
+        if (L[i][i] != 1.0) {
+            outputFile << "Error: L matrix diagonal must be 1.0\n";
             valid = false;
         }
     }
+
+    // Check U matrix diagonal
+    for (int i = 0; i < n; ++i) {
+        if (U[i][i] == 0.0) {
+            outputFile << "Error: Zero detected on the diagonal of U\n";
+            valid = false;
+        }
+    }
+
+    // Check Permutation Matrix
+    for (int i = 0; i < n; ++i) {
+        double rowSum = 0;
+        double colSum = 0;
+        for (int j = 0; j < n; ++j) {
+            rowSum += P[i][j];
+            colSum += P[j][i];
+        }
+        if (rowSum != 1.0 || colSum != 1.0) {
+            outputFile << "Error: Invalid Permutation Matrix\n";
+            valid = false;
+            break;
+        }
+    }
+
     return valid;
+}
+
+void printMatrix(std::ofstream& outputFile,
+                 const std::vector<std::vector<double>>& matrix,
+                 const std::string& matrixName) {
+    outputFile << matrixName << ":\n";
+    for (const auto& row : matrix) {
+        for (const auto& elem : row) {
+            outputFile << std::setw(10) << elem << " ";
+        }
+        outputFile << "\n";
+    }
+    outputFile << "\n";
+}
+
+void printVector(std::ofstream& outputFile,
+                 const std::vector<double>& vec,
+                 const std::string& vectorName) {
+    outputFile << vectorName << ":\n";
+    for (const auto& elem : vec) {
+        outputFile << std::setw(10) << elem << "\n";
+    }
+    outputFile << "\n";
 }
 
 int main() {
     std::ifstream inputFile("../input.txt");
     std::ofstream outputFile("output.txt");
 
-    // Task 1: Write the header to the output file
-    outputFile << "LU Factorization Solution Program\n";
+    // Task 1: Write header
+    outputFile << "LUP Factorization Solution Program\n";
     outputFile << "Author: Hasibul H. Rasheeq\n";
     outputFile << "Affiliation: NC State University\n";
     outputFile << "Date: " << __DATE__ << "\n";
@@ -35,95 +90,83 @@ int main() {
         return 1;
     }
 
-    // Task 2: Read the input text file
+    std::string line;
+    std::getline(inputFile, line);
+    std::stringstream ss(line);
     int n;
-    inputFile >> n;
+    ss >> n;
 
-    // Task 3: Input validation
+    // Input validation
     if (n <= 0) {
-        outputFile << "Error: Matrix order must be a positive integer.\n";
+        outputFile << "Error: Matrix order must be positive.\n";
         return 1;
     }
 
-    // Task 2: Initialize L and U matrices
-    std::vector<std::vector<double>> L(n, std::vector<double> (n, 0.0));
-    std::vector<std::vector<double>> U(n, std::vector<double> (n,0.0));
+    // Read L matrix entirely
+    std::vector<std::vector<double>> L(n, std::vector<double>(n));
+    for (int i = 0; i < n; ++i) {
+        std::getline(inputFile, line);
+        std::stringstream rowStream(line);
+        for (int j = 0; j < n; ++j) {
+            rowStream >> L[i][j];
+        }
+    }
+
+    // Read U matrix entirely
+    std::vector<std::vector<double>> U(n, std::vector<double>(n));
+    for (int i = 0; i < n; ++i) {
+        std::getline(inputFile, line);
+        std::stringstream rowStream(line);
+        for (int j = 0; j < n; ++j) {
+            rowStream >> U[i][j];
+        }
+    }
+
+    // Read Permutation Matrix
+    std::vector<std::vector<double>> P(n, std::vector<double>(n));
+    for (int i = 0; i < n; ++i) {
+        std::getline(inputFile, line);
+        std::stringstream rowStream(line);
+        for (int j = 0; j < n; ++j) {
+            rowStream >> P[i][j];
+        }
+    }
+
+    // Read RHS vector b
     std::vector<double> b(n);
-
-    // Task 2: Set diagonal elements of L to 1
     for (int i = 0; i < n; ++i) {
-        L[i][i] = 1.0;
+        std::getline(inputFile, line);
+        b[i] = std::stod(line);
     }
 
-    // Task 2: Read non-zero elements of L (below the diagonal)
-    for (int i = 1; i < n; ++i) {
-        for (int j = 0; j < i; ++j) {
-            inputFile >> L[i][j];
-        }
-    }
-
-    // Task 2: Read non-zero elements of U (on and above the diagonal)
-    for (int i = 0; i < n; ++i) {
-        for (int j = i; j < n; ++j) {
-            inputFile >> U[i][j];
-        }
-    }
-
-    // Task 2: Read Right-Hand-Side (RHS) vector b
-    for (int i = 0; i < n; ++i) {
-        inputFile >> b[i];
-    }
-
-    // Task 3: Check the correctness of the input data
-    if (!checkInputData(n, U, outputFile)) {
-        outputFile << "Error: Invalid input data detected.\n";
+    // Task 3: Check input data
+    if (!checkInputData(n, L, U, P, outputFile)) {
+        outputFile << "Error: Invalid input data.\n";
         return 1;
-    } else {
-        outputFile << "Congratulations! All input data are correct.\n\n";
     }
 
-    // Task 3: Echo the input data to the output file
-    outputFile << "Matrix order: n = " << n << "\n\n";
+    // Task 4: Apply Permutation Matrix to b
+    std::vector<double> Pb(n);
+    applyPermutationMatrix(P, b, Pb);
 
-    outputFile << "Lower Triangular Matrix L:\n";
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            outputFile << std::setw(10) << L[i][j] << " ";
-        }
-        outputFile << "\n";
-    }
-    outputFile << "\n";
-
-    outputFile << "Upper Triangular Matrix U:\n";
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            outputFile << std::setw(10) << U[i][j] << " ";
-        }
-        outputFile << "\n";
-    }
-    outputFile << "\n";
-
-    outputFile << "Right-Hand Side Vector b:\n";
-    for (int i = 0; i < n; ++i) {
-        outputFile << std::setw(10) << b[i] << "\n";
-    }
-    outputFile << "\n";
-
-    // Task 4: Solve Ly = b using forward substitution
+    // Task 5: Solve system
     std::vector<double> y(n);
-    forwardSubstitution(L, b, y);
-
-    // Task 4: Solve Ux = y using back substitution
     std::vector<double> x(n);
+
+    forwardSubstitution(L, Pb, y);
     backSubstitution(U, y, x);
 
-    // Task 5: Write the solution vector to the output file
+    printMatrix(outputFile, L, "Lower Triangular Matrix L");
+    printMatrix(outputFile, U, "Upper Triangular Matrix U");
+    printMatrix(outputFile, P, "Permutation Matrix P");
+    printVector(outputFile, b, "Right-Hand Side Vector b");
+
+    // Task 6: Write solution vector
     outputFile << "Solution Vector x:\n";
     for (int i = 0; i < n; ++i) {
         outputFile << "x[" << i + 1 << "] = " << std::setw(10) << x[i] << "\n";
     }
 
-    // Close files
     inputFile.close();
     outputFile.close();
 

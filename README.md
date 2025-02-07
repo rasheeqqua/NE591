@@ -1,4 +1,4 @@
-# In-Lab Assignment 4: LU Factorization Solution Program
+# In-Lab Assignment 5: LUP Factorization Solution Program
 
 #### Notes:
 - Customizing the Input:
