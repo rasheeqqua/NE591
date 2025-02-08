@@ -1,12 +1,4 @@
-# In-Lab Assignment 4: LU Factorization Solution Program
-
-#### Notes:
-- Customizing the Input:
-    - The program reads input from a file named `input.txt`.
-    - The input file must be formatted as specified in the `input.txt` file.
-
-- Viewing the results:
-    - All the results are printed to `output.txt` file inside the `build` folder. Open the `output.txt` file to see the messages and results.
+# In-Lab Assignment 5: LUP Factorization Solution Program
 
 #### a) To compile the source code, open a terminal in the directory containing the source files and type the following commands:
 ```bash
@@ -19,77 +11,105 @@ make
 
 #### b) To run the program, use the command:
 ```bash
-./inlab4
+./outlab5
+cat output.txt
 ```
+If you want to update the input file then use the following commands:
+```bash
+cd ..
+nano input.txt
+```
+Then change the input values in the `nano` Text Editor's window.
+After you are done changing the values, then press `ctrl + o` to save the input file.
+This will prompt you to ensure the filename. Just press `enter`.
+After this press `ctrl + x` to exit the nano editor.
+
+Now type in the following commands:
+```bash
+cd build
+./outlab5
+```
+The code should now acknowledge the changed inputs and if you now type in:
+```bash
+cat output.txt
+```
+You should see the updated output file.
 
 #### c) The code is: `operational`.
 
-#### d) Pathname of the source codes:
-`inlab4/main.cpp` -> contains the main module excluding the forward and back substitution algorithms.
-`inlab4/substitution.cpp` -> Contains the algorithms for forward and back substitution algorithms.
-`inlab4/input.txt` -> Contains the order of the matrices, the elements of L, U, and b matrices.
-`inlab4/InputOutput` -> This folder contains sample input and output files.
+Here's a refactored README based on the code we've developed:
+
+#### d) Pathname of the Source Codes:
+`outlab5/main.cpp` -> Contains the main program module
+`outlab5/LUPFactorization.cpp` -> Contains the main algorithm for LUP decomposition.
+`outlab5/substitution.cpp` -> Implements forward and back substitution algorithms
+`outlab5/ApplyPermutationMatrix.cpp` -> Handles permutation matrix operations
+`outlab5/CalculateResiduals.cpp` -> Calculates the residual of Ax-b.
+`outlab5/LUFactorization.cpp` -> Implements algorithm for LU decomposition in case pivoting is not used.
+`outlab5/MatrixVectorProduct.cpp` -> Implementation of matrix vector product brought from Out-Lab 1.
+`outlab5/input.txt` -> Contains n, usePivoting, A matrix and b vector.
+`outlab5/build/output.txt` -> Contains A, L, U, P matrices and b vector, and solution vector x and the residuals of Ax-b.
+`outlab5/Examples` -> Folder with sample input and output files
 
 #### e) Brief Description of the Solved Problem
-This program solves a system of linear equations Ax = b using an algorithm based on LU Factorization.
-Assuming the lower triangular matrix (L), the upper triangular matrix (U) and the right-hand side vector (b) are all given
-in an input text file, the program solves for the vector x in two stages:
-- Forward Substitution to solve Ly = b
+This program solves a system of linear equations Ax = b using an algorithm based on LUP Factorization.
+Assuming the original matrix (A), the permutation matrix (P), and the right-hand side vector (b) are all given
+in an input text file, the program performs LU factorization with pivoting and solves for the vector x in two stages:
+- Forward Substitution to solve Ly = Pb
 - Back Substitution to solve Ux = y
 
 #### Variable Declarations
 
-- `n`: The order of the square matrices (L and U), i.e., the number of equations in the system.
-- `L`: The unit lower triangular matrix L of size  n x n.
+- `n`: The order of the square matrices (A, L, U, and P), i.e., the number of equations in the system.
+- `A`: The original coefficient matrix A of size n x n.
+- `L`: The unit lower triangular matrix L of size n x n.
 - `U`: The upper triangular matrix U of size n x n.
+- `P`: The permutation matrix P of size n x n.
 - `b`: The right-hand side vector b of length n.
 - `y`: The intermediate vector y obtained after forward substitution.
-- `x`: The solution vector x of the system  Ax = b.
-- `valid`: Flag indicating whether the input data is valid (e.g., no zero diagonal elements in U).
+- `x`: The solution vector x of the system Ax = b.
+- `usePivoting`: Boolean flag indicating whether to use pivoting in the factorization.
 
 #### Function Declarations and Purposes
 
-- `void forwardSubstitution(L, b, y)`: Solves the system Ly = b using forward substitution.
-- `void backSubstitution(U, y, x)`:Solves the system Ux = y using back substitution.
-- `bool checkInputData(n, U, outputFile)`: Checks the correctness of the input data, specifically that the diagonal elements of  U  are non-zero.
+- `bool lupFactorize(A, L, U, P, usePivoting)`: Performs LUP factorization on matrix A, returns success status.
+- `bool verifyLUPFactorization(A, L, U, P)`: Verifies if PA = LU and checks matrix properties.
+- `void forwardSubstitution(L, Pb, y)`: Solves the system Ly = Pb using forward substitution.
+- `void backSubstitution(U, y, x)`: Solves the system Ux = y using back substitution.
+- `vector<double> calculateResidual(A, x, b)`: Calculates the residual vector Ax - b.
 
 #### Step-by-Step Explanation of the Code
 
 1. Task 1:
-    - Writes a header to the output file `output.txt`, including the program title, author, affiliation, date, and a separator line.
+   - Writes a header to the output file `output.txt`, including the program title, author, affiliation, date, and a separator line.
 
 2. Task 2:
-    - Input Reading:
-        - Opens `input.txt` for reading.
-        - Reads the matrix order `n`.
-        - Initializes the matrices `L` and `U` as  nxn  with all the elements set to zero.
-        - Sets the diagonal elements of `L` to 1.
-        - Reads the non-zero elements of `L` below the diagonal, row by row.
-        - Reads the non-zero elements of `U` on and above the diagonal, row by row.
-        - Reads the `n` elements of the right-hand side vector `b`.
-    - Input Format:
-        - For Matrix  L :
-            - For row `i` from 1 to `n - 1`, read `i` elements for columns `0` to `i - 1`.
-        - For Matrix  U :
-            - For row `i` from 0 to `n - 1`, read `n - i` elements for columns `i` to `n - 1`.
-        - For Vector `b`:
-            - Read `n` elements.
+   - Input Reading:
+      - Opens `input.txt` for reading.
+      - Reads the matrix order `n` and pivoting flag.
+      - Reads the elements of matrix A.
+      - Reads the elements of permutation matrix P.
+      - Reads the right-hand side vector b.
 
 3. Task 3:
-    - Input Validation:
-        - Checks that `n` is positive.
-        - Uses `checkInputData` function to ensure diagonal elements of `U` are non-zero.
-        - If invalid data is detected, writes an informative error message to the output file and terminates.
-        - If all data is correct, congratulates the user and proceeds.
-    - Echoes Input Data:
-        - Writes the matrix order, and the matrices `L`, `U`, and vector `b` to the output file in a professional format.
+   - LUP Factorization:
+      - Performs LUP factorization using the lupFactorize function.
+      - Verifies the factorization using verifyLUPFactorization.
+      - If factorization fails, writes an error message and terminates.
+      - If successful, proceeds with the solution.
 
 4. Task 4:
-    - Forward Substitution:
-        - Calls `forwardSubstitution(L, b, y)` to solve  Ly = b  and obtains the intermediate vector `y`.
-    - Back Substitution:
-        - Calls `backSubstitution(U, y, x)` to solve  Ux = y  and obtains the solution vector `x`.
+   - Forward Substitution:
+      - Applies permutation matrix P to vector b to get Pb.
+      - Calls `forwardSubstitution(L, Pb, y)` to solve Ly = Pb.
+   - Back Substitution:
+      - Calls `backSubstitution(U, y, x)` to solve Ux = y.
 
 5. Task 5:
-    - Output Solution:
-        - Writes the solution vector `x` to the output file `output.txt` with appropriate formatting.
+   - Solution Verification:
+      - Calculates residual vector using calculateResidual.
+      - Computes maximum absolute residual.
+   - Output Results:
+      - Writes matrices A, L, U, and P to output file.
+      - Writes solution vector x to output file.
+      - Writes residual vector and maximum residual to output file.

@@ -1,33 +1,44 @@
-LU Factorization Solution Program
+LUP Factorization Solution Program
 Author: Hasibul H. Rasheeq
-Date: Feb  6 2025
+Date: Feb  8 2025
 ----------------------------------------
 
 Input Matrix A:
-         3         -7         -2          2 
-        -3          5          1          0 
-         6         -4          0         -5 
-        -9          5         -5         12 
+         1          2          3          4          5 
+         2          3          4          5          1 
+         3          4          5          1          2 
+         4          5          1          2          3 
+         5          1          2          3          4 
 
 Lower Triangular Matrix L:
-         1          0          0          0 
-        -1          1          0          0 
-         2         -5          1          0 
-        -3          8          3          1
+         1          0          0          0          0 
+       0.8          1          0          0          0 
+       0.6   0.809524          1          0          0 
+       0.4   0.619048   0.833333          1          0 
+       0.2   0.428571   0.666667      0.875          1 
 
 Upper Triangular Matrix U:
-         3         -7         -2          2 
-         0         -2         -1          2 
-         0          0         -1          1 
-         0          0          0         -1 
+         5          1          2          3          4 
+         0        4.2       -0.6       -0.4       -0.2 
+         0          0    4.28571   -0.47619  -0.238095 
+         0          0          0    4.44444  -0.277778 
+         0          0          0          0     4.6875 
+
+Upper Triangular Matrix U:
+         0          0          0          0          1 
+         0          0          0          1          0 
+         0          0          1          0          0 
+         0          1          0          0          0 
+         1          0          0          0          0 
 
 Solution Vector x:
-x[1] =          3
-x[2] =          4
-x[3] =         -6
-x[4] =         -1
+x[1] =   0.166667
+x[2] =  0.0666667
+x[3] =  0.0666667
+x[4] =  0.0666667
+x[5] =  0.0666667
 
 Residual errors (Ax-b):
-0.0 0.0 0.0 0.0 
+0.0 0.0 0.0 0.0 0.0 
 
-Maximum Absolute Residual: 0.0e+00
+Maximum Absolute Residual: 2.2e-16

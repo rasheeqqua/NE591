@@ -1,41 +1,19 @@
-/*--------------------Inlab4--------------------*/
+/*--------------------Outlab5--------------------*/
 /*
- * Created by Hasibul Hossain Rasheeq on Thursday, 02/06/25.
+ * Created by Hasibul Hossain Rasheeq on 02/08/25.
 */
 
 #include <algorithm>
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
-#include <cmath>
+#include "ApplyPermutationMatrix.cpp"
+#include "CalculateResiduals.cpp"
 #include "LUFactorization.cpp"
+#include "LUPFactorization.cpp"
 #include "substitution.cpp"
-
-// Matrix-vector multiplication
-std::vector<double> matrixVectorProduct(const std::vector<std::vector<double>>& A,
-                                      const std::vector<double>& x) {
-    int n = A.size();
-    std::vector<double> result(n, 0.0);
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            result[i] += A[i][j] * x[j];
-        }
-    }
-    return result;
-}
-
-std::vector<double> calculateResiduals(const std::vector<std::vector<double>>& A,
-                                     const std::vector<double>& x,
-                                     const std::vector<double>& b) {
-    std::vector<double> Ax = matrixVectorProduct(A, x);
-    std::vector<double> residuals(b.size());
-    for (int i = 0; i < b.size(); ++i) {
-        residuals[i] = std::abs(Ax[i] - b[i]);
-    }
-    return residuals;
-}
 
 void printMatrix(std::ofstream& outputFile, const std::vector<std::vector<double>>& matrix, const std::string& name) {
     outputFile << name << ":\n";
@@ -52,7 +30,7 @@ int main() {
     std::ifstream inputFile("../input.txt");
     std::ofstream outputFile("output.txt");
 
-    outputFile << "LU Factorization Solution Program\n";
+    outputFile << "LUP Factorization Solution Program\n";
     outputFile << "Author: Hasibul H. Rasheeq\n";
     outputFile << "Date: " << __DATE__ << "\n";
     outputFile << "----------------------------------------\n\n";
@@ -95,22 +73,39 @@ int main() {
     // Print input matrix A
     printMatrix(outputFile, A, "Input Matrix A");
 
-    // Perform LU factorization
+    // Perform either LU factorization or else LUP factorization
     std::vector<std::vector<double>> L(n, std::vector<double>(n));
     std::vector<std::vector<double>> U(n, std::vector<double>(n));
-    if (!luFactorize(A, L, U, usePivoting)) {
-        outputFile << "Error: LU factorization failed.\n";
-        return 1;
+    std::vector<std::vector<double>> P(n, std::vector<double>(n));
+    std::vector<double> y(n), x(n), Pb(n);
+    if (!usePivoting) {
+        if (!luFactorize(A, L, U)) {
+            outputFile << "Error: LU factorization failed.\n";
+            return 1;
+        }
+
+        // Print L and U matrices
+        printMatrix(outputFile, L, "Lower Triangular Matrix L");
+        printMatrix(outputFile, U, "Upper Triangular Matrix U");
+
+        forwardSubstitution(L, b, y);
+        backSubstitution(U, y, x);
+    } else if (usePivoting) {
+        if (!lupFactorize(A, L, U, P)) {
+            outputFile << "Error: LUP Factorization failed.\n";
+            return 1;
+        }
+
+        // Print L and U matrices
+        printMatrix(outputFile, L, "Lower Triangular Matrix L");
+        printMatrix(outputFile, U, "Upper Triangular Matrix U");
+        printMatrix(outputFile, P, "Upper Triangular Matrix U");
+
+        applyPermutationMatrix(P, b, Pb);
+
+        forwardSubstitution(L, Pb, y);
+        backSubstitution(U, y, x);
     }
-
-    // Print L and U matrices
-    printMatrix(outputFile, L, "Lower Triangular Matrix L");
-    printMatrix(outputFile, U, "Upper Triangular Matrix U");
-
-    // Solve the system
-    std::vector<double> y(n), x(n);
-    forwardSubstitution(L, b, y);
-    backSubstitution(U, y, x);
 
     // Print solution vector
     outputFile << "Solution Vector x:\n";

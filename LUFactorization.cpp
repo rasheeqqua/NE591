@@ -1,5 +1,5 @@
 //
-// Created by Hasibul H. Rasheeq on 02/06/25.
+// Created by Hasibul H. Rasheeq on 02/08/25.
 //
 
 #include <vector>
@@ -44,8 +44,7 @@ bool verifyFactorization(const std::vector<std::vector<double>>& A,
 
 bool luFactorize(const std::vector<std::vector<double>>& A,
                  std::vector<std::vector<double>>& L,
-                 std::vector<std::vector<double>>& U,
-                 bool usePivoting = false) {
+                 std::vector<std::vector<double>>& U) {
     int n = A.size();
     U = A;  // Copy A to U for in-place factorization
     L = std::vector<std::vector<double>>(n, std::vector<double>(n, 0.0));

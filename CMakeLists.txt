@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.25.1)
-project(inlab4)
+cmake_minimum_required(VERSION 3.20.2)
+project(outlab5)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(inlab4 main.cpp)
+add_executable(outlab5 main.cpp)
