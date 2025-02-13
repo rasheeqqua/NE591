@@ -1,4 +1,4 @@
-# In-Lab Assignment 5: LUP Factorization Solution Program
+# Milestone 1:
 
 #### a) To compile the source code, open a terminal in the directory containing the source files and type the following commands:
 ```bash
@@ -11,7 +11,7 @@ make
 
 #### b) To run the program, use the command:
 ```bash
-./outlab5
+./milestone1
 cat output.txt
 ```
 If you want to update the input file then use the following commands:
@@ -27,7 +27,7 @@ After this press `ctrl + x` to exit the nano editor.
 Now type in the following commands:
 ```bash
 cd build
-./outlab5
+./milestone1
 ```
 The code should now acknowledge the changed inputs and if you now type in:
 ```bash
@@ -40,16 +40,16 @@ You should see the updated output file.
 Here's a refactored README based on the code we've developed:
 
 #### d) Pathname of the Source Codes:
-`outlab5/main.cpp` -> Contains the main program module
-`outlab5/LUPFactorization.cpp` -> Contains the main algorithm for LUP decomposition.
-`outlab5/substitution.cpp` -> Implements forward and back substitution algorithms
-`outlab5/ApplyPermutationMatrix.cpp` -> Handles permutation matrix operations
-`outlab5/CalculateResiduals.cpp` -> Calculates the residual of Ax-b.
-`outlab5/LUFactorization.cpp` -> Implements algorithm for LU decomposition in case pivoting is not used.
-`outlab5/MatrixVectorProduct.cpp` -> Implementation of matrix vector product brought from Out-Lab 1.
-`outlab5/input.txt` -> Contains n, usePivoting, A matrix and b vector.
-`outlab5/build/output.txt` -> Contains A, L, U, P matrices and b vector, and solution vector x and the residuals of Ax-b.
-`outlab5/Examples` -> Folder with sample input and output files
+`milestone1/main.cpp` -> Contains the main program module
+`milestone1/LUPFactorization.cpp` -> Contains the main algorithm for LUP decomposition.
+`milestone1/substitution.cpp` -> Implements forward and back substitution algorithms
+`milestone1/ApplyPermutationMatrix.cpp` -> Handles permutation matrix operations
+`milestone1/CalculateResiduals.cpp` -> Calculates the residual of Ax-b.
+`milestone1/LUFactorization.cpp` -> Implements algorithm for LU decomposition in case pivoting is not used.
+`milestone1/MatrixVectorProduct.cpp` -> Implementation of matrix vector product brought from Out-Lab 1.
+`milestone1/input.txt` -> Contains n, usePivoting, A matrix and b vector.
+`milestone1/build/output.txt` -> Contains A, L, U, P matrices and b vector, and solution vector x and the residuals of Ax-b.
+`milestone1/Examples` -> Folder with sample input and output files
 
 #### e) Brief Description of the Solved Problem
 This program solves a system of linear equations Ax = b using an algorithm based on LUP Factorization.
