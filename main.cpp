@@ -6,6 +6,28 @@
 #include "GaussSeidel.cpp"
 #include "SOR.cpp"
 
+// Function to validate input parameters
+bool validateInputs(int n, int maxIter, double epsilon, std::ofstream& output) {
+    bool isValid = true;
+
+    if (n <= 0) {
+        output << "Error: Matrix order must be positive.\n";
+        isValid = false;
+    }
+
+    if (maxIter <= 0) {
+        output << "Error: Maximum iterations must be positive.\n";
+        isValid = false;
+    }
+
+    if (epsilon <= 0) {
+        output << "Error: Stopping criterion must be positive.\n";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 int main() {
     std::ifstream input("../input.txt");
     std::ofstream output("output.txt");
@@ -28,6 +50,13 @@ int main() {
 
     int n;
     input >> n;
+
+    // Validate input parameters before proceeding
+    if (!validateInputs(n, maxIter, epsilon, output)) {
+        input.close();
+        output.close();
+        return 1;
+    }
 
     std::vector<std::vector<double>> A(n, std::vector<double>(n));
     for (int i = 0; i < n; i++) {
