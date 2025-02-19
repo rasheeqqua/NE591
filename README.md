@@ -1,4 +1,4 @@
-# Inlab 6: Solve Matrix Equation with Point Jacobi Method
+# Outlab 6: Solve Matrix Equation with Relaxation Methods
 
 #### a) To compile the source code, open a terminal in the directory containing the source files and type the following commands:
 ```bash
@@ -10,7 +10,7 @@ make
 
 #### b) To run the program, use the command:
 ```bash
-./inlab6
+./outlab6
 cat output.txt
 ```
 If you want to update the input file then use the following commands:
@@ -26,7 +26,7 @@ After this press `ctrl + x` to exit the nano editor.
 Now type in the following commands:
 ```bash
 cd build
-./inlab6
+./outlab6
 ```
 The code should now acknowledge the changed inputs and if you now type in:
 ```bash
@@ -36,7 +36,7 @@ You should see the updated output file.
 
 #### c) The code is: `operational`.
 
-# Inlab 6: Solve Matrix Equation with Point Jacobi Method
+# Outlab 6: Solve Matrix Equation with Relaxation Methods
 
 #### a) Compilation Instructions:
 ```bash
@@ -48,7 +48,7 @@ make
 
 #### b) Execution Instructions:
 ```bash
-./inlab6
+./outlab6
 cat output.txt
 ```
 
@@ -60,22 +60,22 @@ nano input.txt
 # Ctrl + O, Enter to save
 # Ctrl + X to exit
 cd build
-./inlab6
+./outlab6
 cat output.txt  # View updated results
 ```
 
 #### c) Status: `operational`
 
 #### d) Source Code Structure:
-`inlab6/main.cpp` -> Contains program initialization, I/O handling, and method selection  
-`inlab6/PointJacobi.cpp` -> Implements Point-Jacobi iteration method  
-`inlab6/CalculateResidual.cpp` -> Calculates residual norms and error metrics  
-`inlab6/CheckDiagonalDominance.cpp` -> Verifies matrix diagonal dominance  
-`inlab6/GaussSeidel.cpp` -> Placeholder for Gauss-Seidel method (future implementation)  
-`inlab6/SOR.cpp` -> Placeholder for SOR method (future implementation)  
-`inlab6/input.txt` -> Contains method selection, convergence criteria, matrix A, and vector b  
-`inlab6/build/output.txt` -> Contains iteration results, solution vector, and performance metrics  
-`inlab6/Examples` -> Sample input/output files for testing
+`outlab6/main.cpp` -> Contains program initialization, I/O handling, and method selection  
+`outlab6/PointJacobi.cpp` -> Implements Point-Jacobi iteration method  
+`outlab6/CalculateResidual.cpp` -> Calculates residual norms and error metrics  
+`outlab6/CheckDiagonalDominance.cpp` -> Verifies matrix diagonal dominance  
+`outlab6/GaussSeidel.cpp` -> Placeholder for Gauss-Seidel method (future implementation)  
+`outlab6/SOR.cpp` -> Placeholder for SOR method (future implementation)  
+`outlab6/input.txt` -> Contains method selection, convergence criteria, matrix A, and vector b  
+`outlab6/build/output.txt` -> Contains iteration results, solution vector, and performance metrics  
+`outlab6/Examples` -> Sample input/output files for testing
 
 #### e) Problem Description
 This program implements relaxation iterative methods for solving systems of linear equations Ax = b. Currently, it supports the Point-Jacobi method, with framework in place for Gauss-Seidel and SOR methods. The solution process involves iterative refinement until convergence criteria are met.

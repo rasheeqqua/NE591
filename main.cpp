@@ -33,8 +33,8 @@ int main() {
     std::ofstream output("output.txt");
 
     // Write header
-    output << "NE 591 Inlab 06 Code\n";
-    output << "Implemented by Hasibul H. Rasheeq, 02/14/25\n";
+    output << "NE 591 Outlab 06 Code\n";
+    output << "Implemented by Hasibul H. Rasheeq, 02/20/25\n";
     output << "-------------------------------------------\n\n";
     output << "Solve Matrix Equation with Relaxation Iterations\n";
     output << "------------------------------------------------\n\n";
@@ -117,10 +117,29 @@ int main() {
             }
             break;
         case 1:
-            gaussSeidel(output);
+            converged = gaussSeidel(A, b, x, epsilon, maxIter, actualIter, finalError);
+            if (converged) {
+                output << "Iterations converged in: " << actualIter << " iterations\n";
+                output << "Iterative error = " << std::scientific << std::setprecision(6)
+                       << finalError << "\n\n";
+            } else {
+                output << "Failed to converge within " << maxIter << " iterations\n";
+            }
             break;
         case 2:
-            sor(output);
+            // Validate omega for SOR method
+                if (omega <= 0.0 || omega >= 2.0) {
+                    output << "Error: SOR relaxation parameter must be in range (0,2)\n";
+                    return 1;
+                }
+            converged = sor(A, b, x, omega, epsilon, maxIter, actualIter, finalError);
+            if (converged) {
+                output << "Iterations converged in: " << actualIter << " iterations\n";
+                output << "Iterative error = " << std::scientific << std::setprecision(6)
+                       << finalError << "\n\n";
+            } else {
+                output << "Failed to converge within " << maxIter << " iterations\n";
+            }
             break;
     }
 

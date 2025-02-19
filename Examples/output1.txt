@@ -1,5 +1,5 @@
-NE 591 Inlab 06 Code
-Implemented by Hasibul H. Rasheeq, 02/14/25
+NE 591 Outlab 06 Code
+Implemented by Hasibul H. Rasheeq, 02/20/25
 -------------------------------------------
 
 Solve Matrix Equation with Relaxation Iterations
