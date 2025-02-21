@@ -5,6 +5,10 @@
 #include "PointJacobi.cpp"
 #include "GaussSeidel.cpp"
 #include "SOR.cpp"
+#include "LUPFactorization/LUPFactorization.cpp"
+#include "LUPFactorization/ApplyPermutationMatrix.cpp"
+#include "LUPFactorization/Substitution.cpp"
+#include "LUPFactorization/CalculateResiduals.cpp"
 
 // Function to validate input parameters
 bool validateInputs(int n, int maxIter, double epsilon, std::ofstream& output) {
@@ -29,6 +33,9 @@ bool validateInputs(int n, int maxIter, double epsilon, std::ofstream& output) {
 }
 
 int main() {
+    // Solve system based on method selection
+    auto IOStartTime = std::chrono::high_resolution_clock::now();
+
     std::ifstream input("../input.txt");
     std::ofstream output("output.txt");
 
@@ -97,13 +104,21 @@ int main() {
     }
     output << "\n\n";
 
-    // Solve system based on method selection
-    auto start = std::chrono::high_resolution_clock::now();
-
     std::vector<double> x(n, 0.0);
     int actualIter;
     double finalError;
     bool converged;
+
+    std::vector<std::vector<double>> L(n, std::vector<double>(n));
+    std::vector<std::vector<double>> U(n, std::vector<double>(n));
+    std::vector<std::vector<double>> P(n, std::vector<double>(n));
+    std::vector<double> y(n), x_lup(n), Pb(n);
+
+    // Print execution time
+    auto IOEndTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> IODuration = IOEndTime - IOStartTime;
+
+    auto RelaxationStartTime = std::chrono::high_resolution_clock::now();
 
     switch (method) {
         case 0:
@@ -143,21 +158,53 @@ int main() {
             break;
     }
 
-    // Print solution vector
-    output << "Last iterate of vector x:\n";
+    auto RelaxationEndTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> RelaxationDuration = RelaxationEndTime - RelaxationStartTime;
+
+    auto LUPStartTime = std::chrono::high_resolution_clock::now();
+
+    // Perform LUP factorization
+    if (!lupFactorize(A, L, U, P)) {
+        output << "Error: LUP Factorization failed.\n";
+        return 1;
+    }
+
+    applyPermutationMatrix(P, b, Pb);
+    forwardSubstitution(L, Pb, y);
+    backSubstitution(U, y, x_lup);
+
+    auto LUPEndTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> LUPDuration = LUPEndTime - LUPStartTime;
+    auto IOStartTime2 = std::chrono::high_resolution_clock::now();
+
+    // Print Relaxation solution vector and reference LUP solution vector
+    output << "Solution Vector, x, Obtained using Relaxation Method:\n";
     for (int i = 0; i < n; i++) {
-        output << std::scientific << std::setprecision(6) << x[i] << "\n";
+        output<< "x[" << i + 1 << "] = "  << std::scientific << std::setprecision(8) << x[i] << "\n";
+    }
+    output << "\n";
+
+    // Print solution vector
+    output << "Solution Vector, x_lup, Obtained using LUP Method:\n";
+    for (int i = 0; i < n; ++i) {
+        output << "x[" << i + 1 << "] = " << std::setprecision(8) << x_lup[i] << "\n";
     }
     output << "\n";
 
     // Calculate and print residual
     double maxResidual = calculateResidual(A, x, b);
-    output << "Max residual = " << std::scientific << std::setprecision(6) << maxResidual << "\n\n";
+    output << "Max residual for Relaxation Method = " << std::scientific << std::setprecision(8) << maxResidual << "\n";
 
-    // Print execution time
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    output << "Execution time (sec) = " << std::fixed << std::setprecision(6) << duration.count() << "\n";
+    // Calculate and print maximum residual for LUP
+    std::vector<double> residuals = calculateResiduals(A, x_lup, b);
+    double maxLUPResidual = *std::max_element(residuals.begin(), residuals.end());
+    output << "Max residual for LUP Method = : " << std::scientific << std::setprecision(8) << maxLUPResidual << "\n\n";
+
+    auto IOEndTime2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> IODuration2 = IOEndTime2 - IOStartTime2;
+
+    output << "Execution time for Relaxation Method(sec) = " << std::scientific << std::setprecision(8) << RelaxationDuration.count() << "\n";
+    output << "Execution time for LUP Method(sec) = " << std::scientific << std::setprecision(8) << LUPDuration.count() << "\n";
 
     input.close();
     output.close();

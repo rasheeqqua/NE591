@@ -1,0 +1,159 @@
+NE 591 Matrix Generation and Solution Program
+Implemented by Hasibul H. Rasheeq, 02/20/25
+-------------------------------------------
+
+
+Results for n = 32
+----------------------------------------
+
+LUP Factorization Results:
+Execution time: 1.7423e-03 seconds
+Maximum residual: 3.3085e-14
+
+Relaxation Methods Results (ε = 1.0000e-04):
+
+Point Jacobi:
+Converged: Yes
+Iterations: 218
+Final error: 9.7969e-05
+Execution time: 2.6251e-03 seconds
+Maximum residual: 7.9764e-03
+
+Gauss-Seidel:
+Converged: Yes
+Iterations: 124
+Final error: 9.5733e-05
+Execution time: 1.4788e-03 seconds
+Maximum residual: 7.6141e-03
+
+SOR (ω = 1.5000e+00):
+Converged: Yes
+Iterations: 46
+Final error: 9.5322e-05
+Execution time: 5.5214e-04 seconds
+Maximum residual: 4.5143e-03
+
+
+Results for n = 64
+----------------------------------------
+
+LUP Factorization Results:
+Execution time: 1.1522e-02 seconds
+Maximum residual: 1.1657e-13
+
+Relaxation Methods Results (ε = 1.0000e-04):
+
+Point Jacobi:
+Converged: Yes
+Iterations: 397
+Final error: 9.9775e-05
+Execution time: 1.3841e-02 seconds
+Maximum residual: 2.0493e-02
+
+Gauss-Seidel:
+Converged: Yes
+Iterations: 228
+Final error: 9.9705e-05
+Execution time: 5.7491e-03 seconds
+Maximum residual: 2.0315e-02
+
+SOR (ω = 1.5000e+00):
+Converged: Yes
+Iterations: 90
+Final error: 9.3613e-05
+Execution time: 2.2938e-03 seconds
+Maximum residual: 1.2120e-02
+
+
+Results for n = 128
+----------------------------------------
+
+LUP Factorization Results:
+Execution time: 5.1398e-02 seconds
+Maximum residual: 3.4928e-13
+
+Relaxation Methods Results (ε = 1.0000e-04):
+
+Point Jacobi:
+Converged: Yes
+Iterations: 697
+Final error: 9.9831e-05
+Execution time: 6.6279e-02 seconds
+Maximum residual: 4.9327e-02
+
+Gauss-Seidel:
+Converged: Yes
+Iterations: 408
+Final error: 9.9637e-05
+Execution time: 3.8699e-02 seconds
+Maximum residual: 4.9356e-02
+
+SOR (ω = 1.5000e+00):
+Converged: Yes
+Iterations: 166
+Final error: 9.8000e-05
+Execution time: 1.5809e-02 seconds
+Maximum residual: 3.1776e-02
+
+
+Results for n = 512
+----------------------------------------
+
+LUP Factorization Results:
+Execution time: 3.2549e+00 seconds
+Maximum residual: 3.2065e-12
+
+Relaxation Methods Results (ε = 1.0000e-04):
+
+Point Jacobi:
+Converged: Yes
+Iterations: 1911
+Final error: 9.9924e-05
+Execution time: 3.2041e+00 seconds
+Maximum residual: 2.5404e-01
+
+Gauss-Seidel:
+Converged: Yes
+Iterations: 1188
+Final error: 9.9829e-05
+Execution time: 1.7719e+00 seconds
+Maximum residual: 2.6201e-01
+
+SOR (ω = 1.5000e+00):
+Converged: Yes
+Iterations: 521
+Final error: 9.9704e-05
+Execution time: 7.8439e-01 seconds
+Maximum residual: 1.7747e-01
+
+
+Results for n = 1024
+----------------------------------------
+
+LUP Factorization Results:
+Execution time: 2.8408e+01 seconds
+Maximum residual: 1.7527e-11
+
+Relaxation Methods Results (ε = 1.0000e-04):
+
+Point Jacobi:
+Converged: Yes
+Iterations: 2949
+Final error: 9.9927e-05
+Execution time: 1.9561e+01 seconds
+Maximum residual: 5.3880e-01
+
+Gauss-Seidel:
+Converged: Yes
+Iterations: 1919
+Final error: 9.9935e-05
+Execution time: 1.2050e+01 seconds
+Maximum residual: 5.7388e-01
+
+SOR (ω = 1.5000e+00):
+Converged: Yes
+Iterations: 887
+Final error: 9.9825e-05
+Execution time: 5.5206e+00 seconds
+Maximum residual: 3.9859e-01
+
