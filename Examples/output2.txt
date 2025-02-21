@@ -1,0 +1,40 @@
+NE 591 Outlab 06 Code
+Implemented by Hasibul H. Rasheeq, 02/20/25
+-------------------------------------------
+
+Solve Matrix Equation with Relaxation Iterations
+------------------------------------------------
+
+selected Gauss-Seidel Iterations
+Stopping criterion = 1.00e-04
+Iteration limit = 100
+Matrix is of order = 4
+Matrix A:
+3.6e+01 -9.0e+00 -9.0e+00 0.0e+00 
+-9.0e+00 3.6e+01 0.0e+00 -9.0e+00 
+-9.0e+00 0.0e+00 3.6e+01 -9.0e+00 
+0.0e+00 -9.0e+00 -9.0e+00 3.6e+01 
+
+RHS Vector b:
+1.0e+00 1.0e+00 1.0e+00 1.0e+00 
+
+Iterations converged in: 8 iterations
+Iterative error = 3.305525e-05
+
+Solution Vector, x, Obtained using Relaxation Method:
+x[1] = 5.52480145e-02
+x[2] = 5.52483175e-02
+x[3] = 5.52483175e-02
+x[4] = 5.52484686e-02
+
+Solution Vector, x_lup, Obtained using LUP Method:
+x[1] = 5.52486188e-02
+x[2] = 5.52486188e-02
+x[3] = 5.52486188e-02
+x[4] = 5.52486188e-02
+
+Max residual for Relaxation Method = 1.63906049e-05
+Max residual for LUP Method = : 1.11022302e-16
+
+Execution time for Relaxation Method(sec) = 8.23000000e-06
+Execution time for LUP Method(sec) = 1.68410000e-05

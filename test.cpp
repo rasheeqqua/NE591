@@ -1,11 +1,8 @@
-//
-// Created by Hasibul H. Rasheeq on 02/20/25.
-//
-
 #include <fstream>
 #include <vector>
 #include <iomanip>
 #include <chrono>
+#include <cmath>
 #include "PointJacobi.cpp"
 #include "GaussSeidel.cpp"
 #include "SOR.cpp"
@@ -14,22 +11,33 @@
 #include "LUPFactorization/Substitution.cpp"
 #include "LUPFactorization/CalculateResiduals.cpp"
 
+// Function to calculate the largest relative difference between two solution vectors
+// Formula: δ^μ = max(1≤i≤n) |x_i^μ/x_i^LUP - 1|
+double calculateMaxRelativeDifference(const std::vector<double>& x_reference,
+                                    const std::vector<double>& x_iterative) {
+    double max_diff = 0.0;
+    for (size_t i = 0; i < x_reference.size(); i++) {
+        // Avoid division by zero
+        if (std::abs(x_reference[i]) > 1e-15) {
+            double relative_diff = std::abs(x_iterative[i] / x_reference[i] - 1.0);
+            max_diff = std::max(max_diff, relative_diff);
+        }
+    }
+    return max_diff;
+}
+
 // Function to generate matrix A according to the specified requirements
 std::vector<std::vector<double>> generateMatrixA(int n) {
     std::vector<std::vector<double>> A(n, std::vector<double>(n));
 
-    // First, fill non-diagonal elements
     for (int i = 0; i < n; i++) {
         double rowSum = 0.0;
         for (int j = 0; j < n; j++) {
             if (i != j) {
-                // For i != j, a_ij = -1/(i+j)
-                // Note: Adding 2 because i and j are 0-based but formula uses 1-based indices
                 A[i][j] = -1.0 / ((i + 1) + (j + 1));
                 rowSum += std::abs(A[i][j]);
             }
         }
-        // For diagonal elements, a_ii = 1/n - sum(a_ij) where j != i
         A[i][i] = 1.0/n + rowSum;
     }
     return A;
@@ -37,7 +45,7 @@ std::vector<std::vector<double>> generateMatrixA(int n) {
 
 // Function to generate vector b
 std::vector<double> generateVectorB(int n) {
-    return std::vector<double>(n, 1.0);  // All elements are 1
+    return std::vector<double>(n, 1.0);
 }
 
 // Function to solve and print results for a given matrix size
@@ -52,7 +60,7 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
     auto endGen = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> genTime = endGen - startGen;
 
-    // Print matrix A and vector b if n <= 10
+    // Print matrix A and vector b for small matrices
     if (n <= 10) {
         output << "\nMatrix A:\n";
         for (int i = 0; i < n; i++) {
@@ -101,7 +109,7 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
     }
 
     // Solve using relaxation methods
-    const int maxIter = 10000;  // Maximum iterations for relaxation methods
+    const int maxIter = 10000;
 
     // Point Jacobi
     std::vector<double> x_jacobi(n, 0.0);
@@ -130,6 +138,28 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
     auto endSOR = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> sorTime = endSOR - startSOR;
 
+    // Calculate relative differences with respect to LUP solution
+    output << "\nRelative Differences from LUP Solution:\n";
+    output << "----------------------------------------\n";
+
+    if (jacobi_converged) {
+        double jacobi_rel_diff = calculateMaxRelativeDifference(x_lup, x_jacobi);
+        output << "Point Jacobi max relative difference: " << std::scientific
+               << std::setprecision(4) << jacobi_rel_diff << "\n";
+    }
+
+    if (gs_converged) {
+        double gs_rel_diff = calculateMaxRelativeDifference(x_lup, x_gs);
+        output << "Gauss-Seidel max relative difference: " << std::scientific
+               << std::setprecision(4) << gs_rel_diff << "\n";
+    }
+
+    if (sor_converged) {
+        double sor_rel_diff = calculateMaxRelativeDifference(x_lup, x_sor);
+        output << "SOR max relative difference: " << std::scientific
+               << std::setprecision(4) << sor_rel_diff << "\n";
+    }
+
     // Print relaxation method results
     output << "\nRelaxation Methods Results (ε = " << epsilon << "):\n";
     output << "\nPoint Jacobi:\n";
@@ -138,7 +168,8 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
         output << "Iterations: " << jacobi_iter << "\n";
         output << "Final error: " << std::scientific << std::setprecision(4) << jacobi_error << "\n";
         output << "Execution time: " << std::scientific << std::setprecision(4) << jacobiTime.count() << " seconds\n";
-        output << "Maximum residual: " << std::scientific << std::setprecision(4) << calculateResidual(A, x_jacobi, b) << "\n";
+        output << "Maximum residual: " << std::scientific << std::setprecision(4)
+               << calculateResidual(A, x_jacobi, b) << "\n";
     }
 
     output << "\nGauss-Seidel:\n";
@@ -147,7 +178,8 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
         output << "Iterations: " << gs_iter << "\n";
         output << "Final error: " << std::scientific << std::setprecision(4) << gs_error << "\n";
         output << "Execution time: " << std::scientific << std::setprecision(4) << gsTime.count() << " seconds\n";
-        output << "Maximum residual: " << std::scientific << std::setprecision(4) << calculateResidual(A, x_gs, b) << "\n";
+        output << "Maximum residual: " << std::scientific << std::setprecision(4)
+               << calculateResidual(A, x_gs, b) << "\n";
     }
 
     output << "\nSOR (ω = " << omega << "):\n";
@@ -156,7 +188,8 @@ void solveAndPrintResults(int n, std::ofstream& output, double epsilon = 1e-4, d
         output << "Iterations: " << sor_iter << "\n";
         output << "Final error: " << std::scientific << std::setprecision(4) << sor_error << "\n";
         output << "Execution time: " << std::scientific << std::setprecision(4) << sorTime.count() << " seconds\n";
-        output << "Maximum residual: " << std::scientific << std::setprecision(4) << calculateResidual(A, x_sor, b) << "\n";
+        output << "Maximum residual: " << std::scientific << std::setprecision(4)
+               << calculateResidual(A, x_sor, b) << "\n";
     }
 
     output << "\n";
