@@ -1,0 +1,32 @@
+Steady State One-Speed Diffusion Equation Solver - Milestone 2
+Version: 2.0
+Author: Hasibul H. Rasheeq
+Date: Feb 27 2025 22:56:43
+----------------------------------------
+
+Solution Method: Successive Over-Relaxation (SOR) with ω = 1.15
+
+Problem Parameters:
+  Grid dimensions: 5 x 5 (25 unknowns)
+  Rectangle dimensions: 60 cm x 60 cm
+  Grid spacing: δ = 10 cm, γ = 10 cm
+  Physical parameters: D = 0.142 cm, Σa = 0.0222 cm-1
+
+Iteration Information:
+  Maximum iterations allowed: 100
+  Convergence tolerance: 1.000000e-04
+  Converged after 9 iterations
+  Final error: 7.344135e-05
+
+Performance Metrics:
+  Execution time: 0.00004108 seconds
+  Maximum absolute residual: 5.385186e-07
+
+Scalar Flux Solution:
+   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00
+   0.000000e+00   1.115777e+00   1.278748e+00   1.293784e+00   1.278752e+00   1.115775e+00   0.000000e+00
+   0.000000e+00   2.062828e+01   2.269688e+01   2.284478e+01   2.269688e+01   2.062828e+01   0.000000e+00
+   0.000000e+00   3.811989e+02   4.008744e+02   4.018423e+02   4.008744e+02   3.811989e+02   0.000000e+00
+   0.000000e+00   2.062828e+01   2.269689e+01   2.284478e+01   2.269689e+01   2.062828e+01   0.000000e+00
+   0.000000e+00   1.115780e+00   1.278738e+00   1.293801e+00   1.278737e+00   1.115781e+00   0.000000e+00
+   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00

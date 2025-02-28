@@ -1,0 +1,32 @@
+Steady State One-Speed Diffusion Equation Solver - Milestone 2
+Version: 2.0
+Author: Hasibul H. Rasheeq
+Date: Feb 27 2025 22:52:37
+----------------------------------------
+
+Solution Method: Point Jacobi Iteration
+
+Problem Parameters:
+  Grid dimensions: 5 x 5 (25 unknowns)
+  Rectangle dimensions: 60 cm x 60 cm
+  Grid spacing: δ = 10 cm, γ = 10 cm
+  Physical parameters: D = 0.142 cm, Σa = 0.0222 cm-1
+
+Iteration Information:
+  Maximum iterations allowed: 10
+  Convergence tolerance: 1.000000e-04
+  Converged after 8 iterations
+  Final error: 5.728742e-05
+
+Performance Metrics:
+  Execution time: 0.00003553 seconds
+  Maximum absolute residual: 6.389565e-07
+
+Scalar Flux Solution:
+   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00
+   0.000000e+00   1.115774e+00   1.278723e+00   1.293788e+00   1.278723e+00   1.115774e+00   0.000000e+00
+   0.000000e+00   2.062827e+01   2.269686e+01   2.284475e+01   2.269686e+01   2.062827e+01   0.000000e+00
+   0.000000e+00   3.811989e+02   4.008744e+02   4.018422e+02   4.008744e+02   3.811989e+02   0.000000e+00
+   0.000000e+00   2.062827e+01   2.269686e+01   2.284475e+01   2.269686e+01   2.062827e+01   0.000000e+00
+   0.000000e+00   1.115774e+00   1.278723e+00   1.293788e+00   1.278723e+00   1.115774e+00   0.000000e+00
+   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00   0.000000e+00

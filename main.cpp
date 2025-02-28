@@ -1,124 +1,86 @@
 //
-// Steady State One-Speed Diffusion Equation Solver
-// Version: 1.0
+// Steady State One-Speed Diffusion Equation Solver - Milestone 2
 // Author: Hasibul H. Rasheeq
 // Date: February 27, 2025
+// Version: 2.0
+//
+// This program solves the steady-state, one-speed diffusion equation
+// in a 2D rectangular region with vacuum boundary conditions using
+// either direct (LUP) or iterative methods (Jacobi, Gauss-Seidel, SOR).
 //
 
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <chrono>
-#include <ctime>
-#include "DiffusionClass.cpp"
-#include "LUP/MatrixVectorProduct.cpp"
+#include "DiffusionSolver.cpp"
 
-// Function to get current date and time as a string
-std::string getCurrentDateTime() {
-    auto now = std::chrono::system_clock::now();
-    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
-
-    char buf[100];
-    std::strftime(buf, sizeof(buf), "%b %d %Y %H:%M:%S", std::localtime(&now_time));
-    return std::string(buf);
-}
-
-// Function to calculate residuals
-std::vector<double> calculateResiduals(const std::vector<std::vector<double>>& A,
-                                    const std::vector<double>& x,
-                                    const std::vector<double>& b) {
-    // Calculate Ax
-    std::vector<double> Ax = matrixVectorProduct(A, x);
-
-    // Calculate residual r = Ax - b
-    std::vector<double> residuals(b.size());
-    for (size_t i = 0; i < b.size(); ++i) {
-        residuals[i] = Ax[i] - b[i];
-    }
-
-    return residuals;
-}
-
-// Helper function to flatten 2D solution to 1D vector
-std::vector<double> flattenSolution(const std::vector<std::vector<double>>& phi, int m, int n) {
-    std::vector<double> flattened;
-    flattened.reserve(m * n);
-
-    for (int i = 1; i <= m; ++i) {
-        for (int j = 1; j <= n; ++j) {
-            flattened.push_back(phi[i][j]);
-        }
-    }
-    return flattened;
-}
-
-// Function to estimate memory usage
-size_t estimateMemoryUsage(int m, int n) {
-    size_t totalSize = 0;
-
-    // Memory for coefficient matrix (m*n × m*n)
-    totalSize += sizeof(double) * m * n * m * n;
-
-    // Memory for L, U, and P matrices
-    totalSize += 3 * sizeof(double) * m * n * m * n;
-
-    // Memory for vectors (solution, RHS, intermediate vectors)
-    totalSize += 5 * sizeof(double) * m * n;
-
-    // Memory for source term matrix
-    totalSize += sizeof(double) * m * n;
-
-    return totalSize;
-}
-
-int main() {
+int main(int argc, char* argv[]) {
+    // Initialize solver
     DiffusionSolver solver;
 
-    // Define the input file we'll process
-    const std::string filepath = "../input.txt";
+    // Define the input and output files
+    std::string inputFile = "../input.txt";
+    std::string outputFile = "./output.txt";
 
-    // Define corresponding output file
-    const std::string outputfile = "./output.txt";
+    // Parse command line arguments if provided
+    if (argc > 1) {
+        inputFile = argv[1];
+    }
+    if (argc > 2) {
+        outputFile = argv[2];
+    }
+
+    // Read input file
+    if (!solver.readInput(inputFile)) {
+        std::cerr << "Error reading input file. Exiting." << std::endl;
+        return 1;
+    }
+
+    // Variables to store results
+    int iterations;
+    double finalError;
+    bool converged;
 
     // Measure execution time
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    // Read input file
-    if (!solver.readInput(filepath)) {
-        return 1;
-    }
-
-    // Solve the system
-    auto solution = solver.solve();
+    // Solve the system using the selected method
+    auto solution = solver.solve(iterations, finalError, converged);
 
     // End timing
     auto endTime = std::chrono::high_resolution_clock::now();
     double executionTime = std::chrono::duration<double>(endTime - startTime).count();
 
-    // Calculate residuals
-    auto A = solver.buildMatrix();
-    auto b = solver.buildRHS();
-    auto x = flattenSolution(solution, solver.m, solver.n);
-    auto residuals = calculateResiduals(A, x, b);
+    // Write output
+    solver.writeOutput(solution, outputFile, iterations, finalError, converged, executionTime);
 
-    // Find maximum residual
-    double maxResidual = 0.0;
-    for (const auto& res : residuals) {
-        maxResidual = std::max(maxResidual, std::abs(res));
+    // Optional: If using an iterative method, compare with LUP solution for verification
+    if (solver.getFlag() > 0 && converged && solver.getGridDimensions().first * solver.getGridDimensions().second <= 400) {
+        std::cout << "Comparing iterative solution with LUP solution for verification..." << std::endl;
+
+        // Save the original flag
+        int originalFlag = solver.getFlag();
+
+        // Create a new solver instance for LUP
+        DiffusionSolver lupSolver;
+        if (lupSolver.readInput(inputFile)) {
+            int lupIterations;
+            double lupError;
+            bool lupConverged;
+
+            // Force LUP method (flag = 0)
+            auto lupSolution = lupSolver.solve(lupIterations, lupError, lupConverged);
+
+            if (lupConverged) {
+                // Compare solutions
+                double maxDifference = solver.compareSolutions(solution, lupSolution);
+                std::cout << "Maximum relative difference between iterative and LUP solutions: "
+                          << std::scientific << std::setprecision(6) << maxDifference << std::endl;
+
+                // Write LUP solution to a comparison file
+                lupSolver.writeOutput(lupSolution, "lup_solution.txt", 0, 0.0, true, 0.0);
+            }
+        }
     }
 
-    // Estimate memory usage
-    size_t memoryUsage = estimateMemoryUsage(solver.m, solver.n);
-
-    // Write output with all the required information
-    solver.writeOutputWithDetails(solution, outputfile, executionTime, memoryUsage, residuals, maxResidual);
-
-    // Output to console as well
-    std::cout << "Solved system with grid size " << solver.m << "x" << solver.n << "\n";
-    std::cout << "Execution time: " << executionTime << " seconds\n";
-    std::cout << "Estimated memory usage: " << (memoryUsage / 1024.0 / 1024.0) << " MB\n";
-    std::cout << "Maximum residual: " << std::scientific << maxResidual << std::endl;
+    std::cout << "Solution completed. Results written to " << outputFile << std::endl;
 
     return 0;
 }
