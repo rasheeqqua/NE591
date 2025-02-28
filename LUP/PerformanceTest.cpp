@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
-#include "DiffusionClass.cpp"
+#include "../DiffusionClass.cpp"
 #include "MatrixVectorProduct.cpp"
 
 class PerformanceAnalyzer {
