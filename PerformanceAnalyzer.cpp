@@ -211,8 +211,8 @@ public:
                            << std::setw(8) << result.gridSize << " | "
                            << std::setw(9) << (result.converged ? "Yes" : "No") << " | "
                            << std::setw(10) << (method > 0 ? std::to_string(result.iterations) : "N/A") << " | "
-                           << std::setw(13) << std::fixed << std::setprecision(4) << result.executionTime << " | "
-                           << std::setw(10) << std::fixed << std::setprecision(2) << (result.memoryUsage / 1024.0 / 1024.0) << " | "
+                           << std::setw(13) << std::fixed << std::setprecision(8) << result.executionTime << " | "
+                           << std::setw(10) << std::fixed << std::setprecision(8) << (result.memoryUsage / 1024.0 / 1024.0) << " | "
                            << std::setw(11) << std::scientific << std::setprecision(3) << result.maxResidual << "\n";
                 }
             }
@@ -249,8 +249,8 @@ public:
                         outFile << std::left << std::setw(12) << getMethodName(method) << " | "
                                << std::setw(9) << (result.converged ? "Yes" : "No") << " | "
                                << std::setw(10) << (method > 0 ? std::to_string(result.iterations) : "N/A") << " | "
-                               << std::right << std::setw(13) << std::fixed << std::setprecision(4) << result.executionTime << " | "
-                               << std::setw(10) << std::fixed << std::setprecision(2) << (result.memoryUsage / 1024.0 / 1024.0) << " | "
+                               << std::right << std::setw(13) << std::fixed << std::setprecision(8) << result.executionTime << " | "
+                               << std::setw(10) << std::fixed << std::setprecision(8) << (result.memoryUsage / 1024.0 / 1024.0) << " | "
                                << std::setw(11) << std::scientific << std::setprecision(3) << result.maxResidual << "\n";
                         break;
                     }

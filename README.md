@@ -1,115 +1,163 @@
-# Milestone 1:
+# Project Milestone 2: Steady State One-Speed Diffusion Equation Solver
 
 #### a) To compile the source code, open a terminal in the directory containing the source files and type the following commands:
 ```bash
-mkdir build
-cd build
-cmake -S .. -B .
-make
-
+chmod +x compile.sh
+./compile.sh
 ```
 
-#### b) To run the program, use the command:
+#### b) To queue the program, use the command:
 ```bash
-./milestone1
+bsub < submit.sh
+```
+
+THIS WILL RUN ALL 3 PROGRAMS: i) Diffusion Solver program, ii) Verification program (Rotational and Reflective
+verification), and iii) Performance program
+
+To read only the output obtained from the diffusion solver program, type in:
+```bash
 cat output.txt
 ```
-If you want to update the input file then use the following commands:
+
+To read only the output from the verification program, type in:
 ```bash
-cd ..
+cat reflective_*.txt
+cat rotational_*.txt
+```
+
+To read only the output from the performance program, type in:
+```bash
+cat performance_*.txt
+```
+
+The input files for the verification test and performance test are generated automatically. If you want to
+edit the input file for the Diffusion Solver program, then type in:
+
+```bash
 nano input.txt
 ```
+
 Then change the input values in the `nano` Text Editor's window.
 After you are done changing the values, then press `ctrl + o` to save the input file.
 This will prompt you to ensure the filename. Just press `enter`.
 After this press `ctrl + x` to exit the nano editor.
+And then type in:
 
-Now type in the following commands:
 ```bash
-cd build
-./milestone1
+bsub < submit.sh
 ```
-The code should now acknowledge the changed inputs and if you now type in:
+
+to queue the jobs again.
+
+If you want to remove the output files, then type in:
 ```bash
-cat output.txt
+chmod +x remove_output.sh
+./remove_output.sh
 ```
-You should see the updated output file.
+
 
 #### c) The code is: `operational`.
 
-Here's a refactored README based on the code we've developed:
-
 #### d) Pathname of the Source Codes:
-`milestone1/main.cpp` -> Contains the main program module
-`milestone1/LUPFactorization.cpp` -> Contains the main algorithm for LUP decomposition.
-`milestone1/substitution.cpp` -> Implements forward and back substitution algorithms
-`milestone1/ApplyPermutationMatrix.cpp` -> Handles permutation matrix operations
-`milestone1/CalculateResiduals.cpp` -> Calculates the residual of Ax-b.
-`milestone1/LUFactorization.cpp` -> Implements algorithm for LU decomposition in case pivoting is not used.
-`milestone1/MatrixVectorProduct.cpp` -> Implementation of matrix vector product brought from Out-Lab 1.
-`milestone1/input.txt` -> Contains n, usePivoting, A matrix and b vector.
-`milestone1/build/output.txt` -> Contains A, L, U, P matrices and b vector, and solution vector x and the residuals of Ax-b.
-`milestone1/Examples` -> Folder with sample input and output files
+`DiffusionSolver.cpp` -> Contains the DiffusionSolver class implementation with all solver methods
+`main.cpp` -> Contains the main program module
+`PerformanceAnalyzer.cpp` -> Contains code for evaluating performance of different solution methods
+`VerificationTest.cpp` -> Contains code for verification tests with different boundary conditions
+`LUP/LUPFactorization.cpp` -> Contains the main algorithm for LUP decomposition
+`LUP/substitution.cpp` -> Implements forward and back substitution algorithms
+`LUP/ApplyPermutationMatrix.cpp` -> Handles permutation matrix operations
+`LUP/MatrixVectorProduct.cpp` -> Implementation of matrix vector product
+`Examples/General Input Output/` -> Contains the input and output files for the diffusion solver
+`Examples/Performance Results/` -> Contains performance results for the different solver methods
+`Examples/Verification Results/` -> Contains verification test results
+`compile.sh` -> Script to compile all executables
+`submit.sh` -> Script to run all executables on the Hazel cluster
+`remove_output.sh` -> Script to clean up output files
 
 #### e) Brief Description of the Solved Problem
-This program solves a system of linear equations Ax = b using an algorithm based on LUP Factorization.
-Assuming the original matrix (A), the permutation matrix (P), and the right-hand side vector (b) are all given
-in an input text file, the program performs LU factorization with pivoting and solves for the vector x in two stages:
-- Forward Substitution to solve Ly = Pb
-- Back Substitution to solve Ux = y
+This program solves the steady-state, one-speed diffusion equation in a 2D rectangular region with vacuum boundary conditions. The program implements and compares four solution methods:
+- Direct solution using LUP Decomposition
+- Point Jacobi iterative method
+- Gauss-Seidel iterative method
+- Successive Over-Relaxation (SOR) iterative method
+
+The diffusion equation solved is:
+- -D∇²φ(x,y) + Σₐφ(x,y) = q(x,y)
+
+where φ is the neutron flux, D is the diffusion coefficient, Σₐ is the macroscopic absorption cross-section, and q is the source term.
 
 #### Variable Declarations
 
-- `n`: The order of the square matrices (A, L, U, and P), i.e., the number of equations in the system.
-- `A`: The original coefficient matrix A of size n x n.
-- `L`: The unit lower triangular matrix L of size n x n.
-- `U`: The upper triangular matrix U of size n x n.
-- `P`: The permutation matrix P of size n x n.
-- `b`: The right-hand side vector b of length n.
-- `y`: The intermediate vector y obtained after forward substitution.
-- `x`: The solution vector x of the system Ax = b.
-- `usePivoting`: Boolean flag indicating whether to use pivoting in the factorization.
+- `flag`: Integer flag indicating which solution method to use (0: LUP, 1: Jacobi, 2: Gauss-Seidel, 3: SOR)
+- `a, b`: Rectangle dimensions in cm
+- `m, n`: Grid dimensions (number of interior points)
+- `D`: Diffusion coefficient (cm)
+- `sigma_a`: Macroscopic removal cross section (cm⁻¹)
+- `q`: 2D vector storing source term values
+- `delta, gamma`: Grid spacing in x and y directions
+- `maxIterations`: Maximum number of iterations allowed for iterative methods
+- `tolerance`: Convergence tolerance for iterative methods
+- `omega`: Relaxation parameter for SOR method
+- `phi`: 2D vector storing the scalar neutron flux solution
+- `iterations`: Number of iterations performed
+- `finalError`: Final error after iterations
+- `converged`: Boolean indicating whether the solution converged
+- `executionTime`: Time taken to execute the solution
 
 #### Function Declarations and Purposes
 
-- `bool lupFactorize(A, L, U, P, usePivoting)`: Performs LUP factorization on matrix A, returns success status.
-- `bool verifyLUPFactorization(A, L, U, P)`: Verifies if PA = LU and checks matrix properties.
-- `void forwardSubstitution(L, Pb, y)`: Solves the system Ly = Pb using forward substitution.
-- `void backSubstitution(U, y, x)`: Solves the system Ux = y using back substitution.
-- `vector<double> calculateResidual(A, x, b)`: Calculates the residual vector Ax - b.
+- `bool readInput(string)`: Reads input parameters from file
+- `void setParameters(...)`: Manually sets parameters (for testing)
+- `vector<vector<double>> solve(int&, double&, bool&)`: Main solve function that dispatches to appropriate method
+- `bool solvePointJacobi(vector<vector<double>>&, int&, double&)`: Solves using Point Jacobi method
+- `bool solveGaussSeidel(vector<vector<double>>&, int&, double&)`: Solves using Gauss-Seidel method
+- `bool solveSOR(vector<vector<double>>&, int&, double&)`: Solves using SOR method
+- `vector<vector<double>> solveLUP()`: Solves using LUP direct method
+- `void writeOutput(...)`: Writes solution and statistics to output file
+- `double calculateError(const vector<vector<double>>&, const vector<vector<double>>&)`: Calculates error between iterations
+- `double calculateMaxResidual(const vector<vector<double>>&)`: Calculates maximum residual
+- `double compareSolutions(const vector<vector<double>>&, const vector<vector<double>>&)`: Compares two solutions
+- `void applyDiffusionOperator(const vector<vector<double>>&, vector<vector<double>>&)`: Matrix-free operator application
 
 #### Step-by-Step Explanation of the Code
 
-1. Task 1:
-   - Writes a header to the output file `output.txt`, including the program title, author, affiliation, date, and a separator line.
+1. Input Processing:
+    - The program reads an input file containing the solution method flag, iteration parameters, problem geometry, grid dimensions, physical parameters, and source term values.
+    - The input validation ensures all parameters are within valid ranges.
 
-2. Task 2:
-   - Input Reading:
-      - Opens `input.txt` for reading.
-      - Reads the matrix order `n` and pivoting flag.
-      - Reads the elements of matrix A.
-      - Reads the elements of permutation matrix P.
-      - Reads the right-hand side vector b.
+2. Solution Method Selection:
+    - Based on the flag value, the program dispatches to the appropriate solution method:
+        - Flag 0: Direct solution using LUP decomposition
+        - Flag 1: Point Jacobi iterative method
+        - Flag 2: Gauss-Seidel iterative method
+        - Flag 3: Successive Over-Relaxation (SOR) method
 
-3. Task 3:
-   - LUP Factorization:
-      - Performs LUP factorization using the lupFactorize function.
-      - Verifies the factorization using verifyLUPFactorization.
-      - If factorization fails, writes an error message and terminates.
-      - If successful, proceeds with the solution.
+3. Iterative Solution (for flags 1-3):
+    - The solution starts with an initial guess of zero (vacuum boundary conditions).
+    - For each iteration:
+        - The program updates flux values based on the specific method's formula.
+        - Error is calculated between consecutive iterations.
+        - If the error falls below the tolerance, the solution is considered converged.
+        - If max iterations are reached without convergence, the solution terminates.
 
-4. Task 4:
-   - Forward Substitution:
-      - Applies permutation matrix P to vector b to get Pb.
-      - Calls `forwardSubstitution(L, Pb, y)` to solve Ly = Pb.
-   - Back Substitution:
-      - Calls `backSubstitution(U, y, x)` to solve Ux = y.
+4. Direct Solution (for flag 0):
+    - The system is solved using LUP decomposition from Milestone 1.
+    - The coefficient matrix and RHS vector are constructed from the diffusion equation.
+    - LUP factorization is performed, followed by forward and back substitution.
 
-5. Task 5:
-   - Solution Verification:
-      - Calculates residual vector using calculateResidual.
-      - Computes maximum absolute residual.
-   - Output Results:
-      - Writes matrices A, L, U, and P to output file.
-      - Writes solution vector x to output file.
-      - Writes residual vector and maximum residual to output file.
+5. Performance Analysis:
+    - The program measures execution time.
+    - For iterative methods, it tracks the number of iterations and final error.
+    - It calculates the maximum residual to verify solution accuracy.
+
+6. Output Generation:
+    - Results are written to an output file, including:
+        - Solution method and parameters
+        - Problem specifications
+        - Iteration information (for iterative methods)
+        - Performance metrics
+        - The scalar flux solution
+
+7. Verification Testing (optional):
+    - For iterative methods with small grids, the program can compare the solution with the LUP direct method for verification.
+    - Maximum relative difference between solutions is calculated.

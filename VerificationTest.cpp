@@ -81,7 +81,7 @@ public:
         auto solution2 = runTest(method, source2);
 
         // Write results to file
-        std::string filename = "reflective_test_method" + std::to_string(method) + "_results.txt";
+        std::string filename = "reflective_test" + std::to_string(method) + "_results.txt";
         writeComparisonResults(filename, "Reflective Symmetry Test", method, source1, source2, solution1, solution2);
     }
 
@@ -109,7 +109,7 @@ public:
         auto solution2 = runTest(method, source2);
 
         // Write results to file
-        std::string filename = "rotational_test_method" + std::to_string(method) + "_results.txt";
+        std::string filename = "rotational_test" + std::to_string(method) + "_results.txt";
         writeComparisonResults(filename, "Rotational Symmetry Test", method, source1, source2, solution1, solution2);
     }
 

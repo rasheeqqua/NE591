@@ -11,21 +11,13 @@
 
 #include "DiffusionSolver.cpp"
 
-int main(int argc, char* argv[]) {
+int main() {
     // Initialize solver
     DiffusionSolver solver;
 
     // Define the input and output files
-    std::string inputFile = "../input.txt";
-    std::string outputFile = "./output.txt";
-
-    // Parse command line arguments if provided
-    if (argc > 1) {
-        inputFile = argv[1];
-    }
-    if (argc > 2) {
-        outputFile = argv[2];
-    }
+    std::string inputFile = "input.txt";
+    std::string outputFile = "output.txt";
 
     // Read input file
     if (!solver.readInput(inputFile)) {
