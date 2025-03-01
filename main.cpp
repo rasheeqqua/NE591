@@ -158,7 +158,7 @@ int main() {
     // Start timing
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    std::string input_filename = "input.txt";
+    std::string input_filename = "../input.txt";
     std::string output_filename = "output.txt";
 
     // Open input file
