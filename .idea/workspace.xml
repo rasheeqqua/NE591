@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="7" type="long" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
+    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppFormatterOtherPage" type="string" />
+    <option name="/Default/Housekeeping/RefactoringsMru/RenameRefactoring/DoQuickRename/@EntryValue" value="true" type="bool" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e969c9bc-46b2-416f-a1a8-7262baa2fd8d" name="Changes" comment="- Final implementation" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="milestone2" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rasheeqqua&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/rasheeqqua/NE591.git&quot;,
+    &quot;accountId&quot;: &quot;d8b067a5-a462-4197-b6bb-a46795308e76&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2rXAjAhrfjlk3MNnVgkSkXebemu" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C/C++ File.main.cpp.executor": "Run",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "/home/hrashee/projects/NE591/Examples",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
+    <layout>
+      <window_info id="Bookmarks" side_tool="true" />
+      <window_info id="Merge Requests" />
+      <window_info id="Commit_Guest" show_stripe_button="false" />
+      <window_info id="Pull Requests" />
+      <window_info id="Learn" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.50076926" visible="true" weight="0.15849195" />
+      <window_info id="Commit" order="1" weight="0.17679356" />
+      <window_info id="Structure" order="2" sideWeight="0.49923077" side_tool="true" weight="0.17679356" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="TypeScript" />
+      <window_info anchor="bottom" id="Python Packages" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="File Transfer" />
+      <window_info anchor="bottom" id="Vcpkg" />
+      <window_info anchor="bottom" id="clangd" />
+      <window_info anchor="bottom" id="Version Control" order="0" weight="0.3298611" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.3298611" />
+      <window_info active="true" anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" visible="true" weight="0.3298611" />
+      <window_info anchor="bottom" id="Services" order="4" />
+      <window_info anchor="bottom" id="CMake" order="5" />
+      <window_info anchor="bottom" id="Debug" order="6" weight="0.5469361" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.42698827" />
+      <window_info anchor="bottom" id="Build" order="8" weight="0.3303985" />
+      <window_info anchor="bottom" id="Run" order="9" weight="0.33050847" />
+      <window_info anchor="bottom" id="Find" order="10" weight="0.3303985" />
+      <window_info anchor="right" id="make" side_tool="true" />
+      <window_info anchor="right" id="Coverage" side_tool="true" />
+      <window_info anchor="right" id="Python Console" />
+      <window_info anchor="right" id="Notifications" order="0" weight="0.32979503" />
+      <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25" />
+      <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+      <window_info anchor="right" id="Meson" order="5" />
+    </layout>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Examples" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/InputOutput" />
+      <recent name="$PROJECT_DIR$/Output Example" />
+      <recent name="$PROJECT_DIR$/Numerical Experiments" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Examples/Verification Results" />
+      <recent name="$PROJECT_DIR$/Examples/Performance Results" />
+      <recent name="$PROJECT_DIR$/Examples/General Input Output" />
+      <recent name="$PROJECT_DIR$/LUP" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main.cpp" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="NE591" TARGET_NAME="main.cpp" CONFIG_NAME="main.cpp">
+      <option name="sourceFile" value="main.cpp" />
+      <option name="toolchainName" value="Default" />
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="C/C++ File.main.cpp" />
+        <item itemvalue="C/C++ File.main.cpp" />
+        <item itemvalue="C/C++ File.main.cpp" />
+        <item itemvalue="C/C++ File.main.cpp" />
+        <item itemvalue="C/C++ File.main.cpp" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="- Added template files for the assignments">
+      <option name="closed" value="true" />
+      <created>1736688530655</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1736688530655</updated>
+    </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e969c9bc-46b2-416f-a1a8-7262baa2fd8d" name="Changes" comment="- Added template files for the assignments" />
+      <created>1736695178779</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1736695178779</updated>
+      <workItem from="1736695179807" duration="1305000" />
+      <workItem from="1736697989610" duration="5018000" />
+      <workItem from="1736719346561" duration="54000" />
+      <workItem from="1737124448129" duration="8359000" />
+      <workItem from="1737164822379" duration="9035000" />
+      <workItem from="1737674988322" duration="6291000" />
+      <workItem from="1737683497879" duration="181000" />
+      <workItem from="1737731266661" duration="5350000" />
+      <workItem from="1738025627044" duration="5113000" />
+      <workItem from="1738260966128" duration="6969000" />
+      <workItem from="1738333632714" duration="6042000" />
+      <workItem from="1738770341945" duration="2349000" />
+      <workItem from="1738776820603" duration="2321000" />
+      <workItem from="1738876107397" duration="5219000" />
+      <workItem from="1738939718387" duration="5104000" />
+      <workItem from="1738945476877" duration="557000" />
+      <workItem from="1739017810980" duration="4452000" />
+      <workItem from="1739463441010" duration="353000" />
+      <workItem from="1739464184129" duration="12570000" />
+      <workItem from="1739490020822" duration="1629000" />
+      <workItem from="1739548056293" duration="2310000" />
+      <workItem from="1739929862104" duration="2893000" />
+      <workItem from="1739969679038" duration="6622000" />
+      <workItem from="1740091911802" duration="11322000" />
+      <workItem from="1740707578795" duration="7062000" />
+      <workItem from="1740747846456" duration="9683000" />
+      <workItem from="1740779226159" duration="4285000" />
+      <workItem from="1740786760628" duration="41000" />
+      <workItem from="1740796926485" duration="3645000" />
+    </task>
+    <task id="LOCAL-00002" summary="- Added the code for Out Lab 1">
+      <option name="closed" value="true" />
+      <created>1736695248030</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1736695248030</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- Completed out-lab assignment 1.">
+      <option name="closed" value="true" />
+      <created>1736719378406</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1736719378406</updated>
+    </task>
+    <task id="LOCAL-00004" summary="- Almost done with inlab 2">
+      <option name="closed" value="true" />
+      <created>1737169634087</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737169634087</updated>
+    </task>
+    <task id="LOCAL-00005" summary="- Iteration 1">
+      <option name="closed" value="true" />
+      <created>1737170826147</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737170826147</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- Final iteration">
+      <option name="closed" value="true" />
+      <created>1737174697554</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1737174697554</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- Final iteration">
+      <option name="closed" value="true" />
+      <created>1737682136798</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1737682136798</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- Final iteration">
+      <option name="closed" value="true" />
+      <created>1737736475618</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737736475618</updated>
+    </task>
+    <task id="LOCAL-00009" summary="- Final iteration">
+      <option name="closed" value="true" />
+      <created>1738269847385</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738269847385</updated>
+    </task>
+    <task id="LOCAL-00010" summary="- Final iteration">
+      <option name="closed" value="true" />
+      <created>1738340136027</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1738340136027</updated>
+    </task>
+    <task id="LOCAL-00011" summary="- Tried a 3x3 matrix for LU factorization">
+      <option name="closed" value="true" />
+      <created>1738770716954</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1738770716954</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- Added an integrand for the discontinuous function.">
+      <option name="closed" value="true" />
+      <created>1738772964140</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1738772964140</updated>
+    </task>
+    <task id="LOCAL-00013" summary="- Almost done with the implementation.">
+      <option name="closed" value="true" />
+      <created>1738880155457</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1738880155457</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1738881294370</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1738881294370</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1738944779400</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1738944779401</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1739022245738</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1739022245738</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1739483297997</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1739483297997</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1739548078024</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1739548078024</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1739550187312</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1739550187312</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- Fixed certain issues that were suggested by the course instructor.">
+      <option name="closed" value="true" />
+      <created>1739969994579</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1739969994579</updated>
+    </task>
+    <task id="LOCAL-00021" summary="- First implementation.">
+      <option name="closed" value="true" />
+      <created>1739970956506</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1739970956506</updated>
+    </task>
+    <task id="LOCAL-00022" summary="- Added test file.">
+      <option name="closed" value="true" />
+      <created>1740102482993</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1740102482993</updated>
+    </task>
+    <task id="LOCAL-00023" summary="- Exclude build directory.">
+      <option name="closed" value="true" />
+      <created>1740102543998</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1740102543998</updated>
+    </task>
+    <task id="LOCAL-00024" summary="- Final Implementation.">
+      <option name="closed" value="true" />
+      <created>1740113425054</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1740113425054</updated>
+    </task>
+    <task id="LOCAL-00025" summary="- Fixed Milestone 1 code based on feedbacks provided by the instructor.">
+      <option name="closed" value="true" />
+      <created>1740712383161</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1740712383162</updated>
+    </task>
+    <task id="LOCAL-00026" summary="- Final Implementation">
+      <option name="closed" value="true" />
+      <created>1740757336133</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1740757336134</updated>
+    </task>
+    <task id="LOCAL-00027" summary="- Almost final implementation">
+      <option name="closed" value="true" />
+      <created>1740779258141</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1740779258141</updated>
+    </task>
+    <task id="LOCAL-00028" summary="- Final implementation">
+      <option name="closed" value="true" />
+      <created>1740783918848</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1740783918848</updated>
+    </task>
+    <task id="LOCAL-00029" summary="- Final implementation">
+      <option name="closed" value="true" />
+      <created>1740786781365</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1740786781365</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- Added template files for the assignments" />
+    <MESSAGE value="- Added the code for Out Lab 1" />
+    <MESSAGE value="- Completed out-lab assignment 1." />
+    <MESSAGE value="- Almost done with inlab 2" />
+    <MESSAGE value="- Iteration 1" />
+    <MESSAGE value="- Final iteration" />
+    <MESSAGE value="- Tried a 3x3 matrix for LU factorization" />
+    <MESSAGE value="- Added an integrand for the discontinuous function." />
+    <MESSAGE value="- Almost done with the implementation." />
+    <MESSAGE value="- Final implementation." />
+    <MESSAGE value="- Fixed certain issues that were suggested by the course instructor." />
+    <MESSAGE value="- First implementation." />
+    <MESSAGE value="- Added test file." />
+    <MESSAGE value="- Exclude build directory." />
+    <MESSAGE value="- Final Implementation." />
+    <MESSAGE value="- Fixed Milestone 1 code based on feedbacks provided by the instructor." />
+    <MESSAGE value="- Final Implementation" />
+    <MESSAGE value="- Almost final implementation" />
+    <MESSAGE value="- Final implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Final implementation" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
