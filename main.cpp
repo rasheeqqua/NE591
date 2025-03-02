@@ -1,10 +1,10 @@
+#include <mpi.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <cmath>
 #include <iomanip>
 #include <algorithm>
-#include <chrono>
 #include <string>
 
 // Function to check if input data is valid
@@ -42,17 +42,18 @@ bool validateInput(int N, int I, double sigma_T, double sigma_S, double q, doubl
     return true;
 }
 
-// Function to implement source iteration algorithm
+// Function to implement parallel source iteration algorithm
 bool sourceIteration(int N, int I, double sigma_T, double sigma_S, double q, double L,
                      double eps_bar, int k_bar, const std::vector<double>& mu,
                      const std::vector<double>& omega, std::vector<double>& flux,
-                     int& iterations, double& final_error) {
+                     int& iterations, double& final_error, int rank, int size) {
 
     double delta = L / I; // Cell width
 
     // Initialize the scalar flux to zero
     std::vector<double> phi_old(I, 0.0);
     std::vector<double> phi_new(I, 0.0);
+    std::vector<double> phi_local(I, 0.0); // Local contribution to flux
 
     // Create the full quadrature set (including both positive and negative mu)
     std::vector<double> all_mu;
@@ -66,17 +67,23 @@ bool sourceIteration(int N, int I, double sigma_T, double sigma_S, double q, dou
     }
 
     int total_angles = all_mu.size();
+
+    // Calculate angles per process (assuming N is divisible by size)
+    int total_angles_per_proc = total_angles / size;
+    int start_angle = rank * total_angles_per_proc;
+    int end_angle = (rank + 1) * total_angles_per_proc;
+
     bool converged = false;
     double epsilon = 0.0;
 
     // Iteration loop
     int k;
     for (k = 1; k <= k_bar; k++) {
-        // Reset new flux
-        std::fill(phi_new.begin(), phi_new.end(), 0.0);
+        // Reset local flux
+        std::fill(phi_local.begin(), phi_local.end(), 0.0);
 
-        // Loop over all angles
-        for (int n = 0; n < total_angles; n++) {
+        // Loop over assigned angles for this process
+        for (int n = start_angle; n < end_angle; n++) {
             std::vector<double> psi_edge(I + 1, 0.0);
             std::vector<double> psi_avg(I, 0.0);
 
@@ -97,8 +104,8 @@ bool sourceIteration(int N, int I, double sigma_T, double sigma_S, double q, dou
                     // Calculate edge value using diamond difference
                     psi_edge[i+1] = 2.0 * psi_avg[i] - psi_edge[i];
 
-                    // Accumulate contribution to scalar flux
-                    phi_new[i] += all_omega[n] * psi_avg[i];
+                    // Accumulate contribution to local scalar flux
+                    phi_local[i] += all_omega[n] * psi_avg[i];
                 }
             }
             // For negative mu values (right to left sweep)
@@ -118,13 +125,16 @@ bool sourceIteration(int N, int I, double sigma_T, double sigma_S, double q, dou
                     // Calculate edge value using diamond difference
                     psi_edge[i] = 2.0 * psi_avg[i] - psi_edge[i+1];
 
-                    // Accumulate contribution to scalar flux
-                    phi_new[i] += all_omega[n] * psi_avg[i];
+                    // Accumulate contribution to local scalar flux
+                    phi_local[i] += all_omega[n] * psi_avg[i];
                 }
             }
         }
 
-        // Calculate maximum relative error
+        // Sum the local contributions across all processes to get the global phi_new
+        MPI_Allreduce(phi_local.data(), phi_new.data(), I, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+        // Calculate maximum relative error (done by all processes)
         epsilon = 0.0;
         for (int i = 0; i < I; i++) {
             if (std::abs(phi_old[i]) > 1e-10) {
@@ -154,117 +164,187 @@ bool sourceIteration(int N, int I, double sigma_T, double sigma_S, double q, dou
     return converged;
 }
 
-int main() {
-    // Start timing
-    auto start_time = std::chrono::high_resolution_clock::now();
+int main(int argc, char *argv[]) {
+    // Initialize MPI environment
+    MPI_Init(&argc, &argv);
 
-    std::string input_filename = "../input.txt";
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    // Start timing
+    double start_time = MPI_Wtime();
+
+    // Input and output filenames
+    std::string input_filename = "input.txt";
     std::string output_filename = "output.txt";
 
-    // Open input file
-    std::ifstream input_file(input_filename);
-    if (!input_file.is_open()) {
-        std::cerr << "Error: Unable to open input file " << input_filename << std::endl;
-        return 1;
-    }
-
-    // Open output file
-    std::ofstream output_file(output_filename);
-    if (!output_file.is_open()) {
-        std::cerr << "Error: Unable to open output file " << output_filename << std::endl;
-        return 1;
-    }
-
-    // Write header to output file
-    output_file << "==========================================" << std::endl;
-    output_file << "Neutron Transport Equation Solver" << std::endl;
-    output_file << "One-dimensional Slab Geometry, Discrete Ordinates Method" << std::endl;
-    output_file << "Author: Student" << std::endl;
-    output_file << "Affiliation: University" << std::endl;
-    output_file << "Date: " << __DATE__ << std::endl;
-    output_file << "==========================================" << std::endl << std::endl;
-
-    // Read input data
+    // Variables to hold problem data
     int N, I;
     double sigma_T, sigma_S;
     double q, L;
     double eps_bar;
     int k_bar;
+    std::vector<double> omega;
+    std::vector<double> mu;
+    bool valid_input = true;
 
-    input_file >> N >> I;
-    input_file >> sigma_T >> sigma_S;
-    input_file >> q >> L;
-    input_file >> eps_bar >> k_bar;
+    // Manager process (rank 0) reads the input file
+    if (rank == 0) {
+        // Open input file
+        std::ifstream input_file(input_filename);
+        if (!input_file.is_open()) {
+            std::cerr << "Error: Unable to open input file " << input_filename << std::endl;
+            valid_input = false;
+        } else {
+            // Read input data
+            input_file >> N >> I;
+            input_file >> sigma_T >> sigma_S;
+            input_file >> q >> L;
+            input_file >> eps_bar >> k_bar;
 
-    // Read quadrature points and weights
-    std::vector<double> omega(N);
-    std::vector<double> mu(N);
+            // Check if N is divisible by the number of processes
+            if (N * 2 % size != 0) {
+                std::cerr << "Error: Number of angles (2*N = " << 2*N << ") must be divisible by the number of processes (" << size << ")." << std::endl;
+                valid_input = false;
+            } else {
+                // Read quadrature points and weights
+                omega.resize(N);
+                mu.resize(N);
 
-    for (int n = 0; n < N; n++) {
-        input_file >> omega[n] >> mu[n];
+                for (int n = 0; n < N; n++) {
+                    input_file >> omega[n] >> mu[n];
+                }
+
+                // Validate input data
+                valid_input = validateInput(N, I, sigma_T, sigma_S, q, L, eps_bar, k_bar, mu, omega);
+            }
+
+            input_file.close();
+        }
     }
 
-    // Validate input data
-    if (!validateInput(N, I, sigma_T, sigma_S, q, L, eps_bar, k_bar, mu, omega)) {
-        output_file << "Error: Invalid input data" << std::endl;
+    // Broadcast whether input is valid
+    MPI_Bcast(&valid_input, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+
+    // If input is invalid, terminate all processes
+    if (!valid_input) {
+        if (rank == 0) {
+            std::ofstream output_file(output_filename);
+            if (output_file.is_open()) {
+                output_file << "Error: Invalid input data" << std::endl;
+                output_file.close();
+            }
+        }
+        MPI_Finalize();
         return 1;
     }
 
-    // Echo input data
-    output_file << "Input Parameters:" << std::endl;
-    output_file << "Number of angles (N): " << N << std::endl;
-    output_file << "Number of cells (I): " << I << std::endl;
-    output_file << "Total cross section (sigma_T): " << sigma_T << std::endl;
-    output_file << "Scattering cross section (sigma_S): " << sigma_S << std::endl;
-    output_file << "Fixed source strength (q): " << q << std::endl;
-    output_file << "Slab width (L): " << L << std::endl;
-    output_file << "Stopping criterion (eps_bar): " << eps_bar << std::endl;
-    output_file << "Maximum iterations (k_bar): " << k_bar << std::endl << std::endl;
+    // Broadcast input parameters to all processes
+    MPI_Bcast(&N, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&I, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sigma_T, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sigma_S, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&q, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&L, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&eps_bar, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&k_bar, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    output_file << "Quadrature Points and Weights:" << std::endl;
-    output_file << "n\tomega_n\t\tmu_n" << std::endl;
-    for (int n = 0; n < N; n++) {
-        output_file << n+1 << "\t" << omega[n] << "\t" << mu[n] << std::endl;
+    // Non-root processes need to allocate memory for mu and omega
+    if (rank != 0) {
+        omega.resize(N);
+        mu.resize(N);
     }
-    output_file << std::endl;
 
-    // Perform source iteration
+    // Broadcast quadrature weights and points
+    MPI_Bcast(omega.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(mu.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Manager process writes header and echoes input data
+    if (rank == 0) {
+        std::ofstream output_file(output_filename);
+        if (output_file.is_open()) {
+            // Write header
+            output_file << "==========================================" << std::endl;
+            output_file << "Parallel Neutron Transport Equation Solver" << std::endl;
+            output_file << "One-dimensional Slab Geometry, Discrete Ordinates Method" << std::endl;
+            output_file << "Author: Hasibul H. Rasheeq" << std::endl;
+            output_file << "Affiliation: NC State University" << std::endl;
+            output_file << "Date: " << __DATE__ << std::endl;
+            output_file << "Number of MPI Processes: " << size << std::endl;
+            output_file << "==========================================" << std::endl << std::endl;
+
+            // Echo input data
+            output_file << "Input Parameters:" << std::endl;
+            output_file << "Number of angles (N): " << N << std::endl;
+            output_file << "Number of cells (I): " << I << std::endl;
+            output_file << "Total cross section (sigma_T): " << sigma_T << std::endl;
+            output_file << "Scattering cross section (sigma_S): " << sigma_S << std::endl;
+            output_file << "Fixed source strength (q): " << q << std::endl;
+            output_file << "Slab width (L): " << L << std::endl;
+            output_file << "Stopping criterion (eps_bar): " << eps_bar << std::endl;
+            output_file << "Maximum iterations (k_bar): " << k_bar << std::endl << std::endl;
+
+            output_file << "Quadrature Points and Weights:" << std::endl;
+            output_file << "n\tomega_n\t\tmu_n" << std::endl;
+            for (int n = 0; n < N; n++) {
+                output_file << n+1 << "\t" << omega[n] << "\t" << mu[n] << std::endl;
+            }
+            output_file << std::endl;
+
+            output_file.close();
+        }
+    }
+
+    // Perform parallel source iteration
     std::vector<double> flux(I);
     int iterations;
     double final_error;
 
     bool converged = sourceIteration(N, I, sigma_T, sigma_S, q, L, eps_bar, k_bar,
-                                   mu, omega, flux, iterations, final_error);
+                                   mu, omega, flux, iterations, final_error, rank, size);
 
-    // Report convergence status
-    output_file << "Source Iteration Results:" << std::endl;
-    if (converged) {
-        output_file << "Iterations converged successfully." << std::endl;
-    } else {
-        output_file << "Iterations did NOT converge within maximum iterations." << std::endl;
+    // End timing
+    double end_time = MPI_Wtime();
+    double elapsed_time = end_time - start_time;
+
+    // Get the maximum elapsed time across all processes
+    double global_elapsed_time;
+    MPI_Reduce(&elapsed_time, &global_elapsed_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+    // Manager writes results to output file
+    if (rank == 0) {
+        std::ofstream output_file(output_filename, std::ios::app);
+        if (output_file.is_open()) {
+            // Report convergence status
+            output_file << "Source Iteration Results:" << std::endl;
+            if (converged) {
+                output_file << "Iterations converged successfully." << std::endl;
+            } else {
+                output_file << "Iterations did NOT converge within maximum iterations." << std::endl;
+            }
+
+            output_file << "Number of iterations: " << iterations << std::endl;
+            output_file << "Final relative error: " << final_error << std::endl << std::endl;
+
+            // Write flux values
+            output_file << "Final Scalar Flux Values:" << std::endl;
+            output_file << "i\tflux" << std::endl;
+
+            for (int i = 0; i < I; i++) {
+                output_file << i+1 << "\t" << std::scientific << std::setprecision(6) << std::setw(14) << flux[i] << std::endl;
+            }
+
+            // Report elapsed time
+            output_file << std::endl;
+            output_file << "Wall-clock time: " << global_elapsed_time << " seconds" << std::endl;
+
+            output_file.close();
+        }
     }
 
-    output_file << "Number of iterations: " << iterations << std::endl;
-    output_file << "Final relative error: " << final_error << std::endl;
-
-    // Write flux values
-    output_file << "Final Scalar Flux Values:" << std::endl;
-    output_file << "i\tflux" << std::endl;
-
-    for (int i = 0; i < I; i++) {
-        output_file << i+1 << "\t" << std::scientific << std::setprecision(6) << flux[i] << std::endl;
-    }
-
-    // Calculate and report elapsed time
-    auto end_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end_time - start_time;
-
-    output_file << std::endl;
-    output_file << "Wall-clock time: " << elapsed.count() << " seconds" << std::endl;
-
-    // Close files
-    input_file.close();
-    output_file.close();
+    // Finalize MPI environment
+    MPI_Finalize();
 
     return 0;
 }
