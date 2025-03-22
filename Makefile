@@ -1,16 +1,15 @@
-CXX = g++
-CXXFLAGS = -std=c++11 -Wall -O2
+CXX       = mpicxx
+CXXFLAGS  = -O2 -std=c++11
+SRCS   = ./iterative/main.cpp ./iterative/DiffusionSolver.cpp ./LUP/LUPFactorization.cpp ./LUP/substitution.cpp ./LUP/ApplyPermutationMatrix.cpp
+OBJS   = $(SRCS:.cpp=.o)
 
-all: cg_solver
+all: solver performance
 
-cg_solver: main.o matrix_operations.o
-	$(CXX) $(CXXFLAGS) -o cg_solver main.o matrix_operations.o
+solver: $(SRCS)
+$(CXX) $(CXXFLAGS) -o solver $(SRCS)
 
-main.o: main.cpp matrix_operations.h
-	$(CXX) $(CXXFLAGS) -c main.cpp
-
-matrix_operations.o: matrix_operations.cpp matrix_operations.h
-	$(CXX) $(CXXFLAGS) -c matrix_operations.cpp
+performance: PerformanceAnalyzer.cpp ./iterative/DiffusionSolver.cpp ./LUP/LUPFactorization.cpp ./LUP/substitution.cpp ./LUP/ApplyPermutationMatrix.cpp
+$(CXX) $(CXXFLAGS) -o performance PerformanceAnalyzer.cpp ./iteraive/DiffusionSolver.cpp ./LUP/LUPFactorization.cpp ./LUP/substitution.cpp ./LUP/ApplyPermutationMatrix.cpp
 
 clean:
-	rm -f *.o cg_solver
+rm -f *.o solver performance *.log *.txt
