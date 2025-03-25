@@ -1,4 +1,5 @@
 #include "matrix_operations.h"
+#include <cmath>
 
 // a. Multiplication of a vector by a scalar: c.y
 std::vector<double> scalar_multiply(const std::vector<double>& y, double c) {
@@ -53,4 +54,18 @@ std::vector<double> matrix_vector_product(const std::vector<std::vector<double>>
     }
 
     return result;
+}
+
+// Vector subtraction: y-z
+std::vector<double> vector_subtract(const std::vector<double>& y, const std::vector<double>& z) {
+    std::vector<double> result(y.size());
+    for (std::size_t i = 0; i < y.size(); i++) {
+        result[i] = y[i] - z[i];
+    }
+    return result;
+}
+
+// Calculate L2 norm of a vector
+double calculate_L2_norm(const std::vector<double>& v) {
+    return std::sqrt(scalar_product(v, v));
 }

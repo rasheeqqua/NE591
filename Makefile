@@ -1,16 +1,25 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -O2
 
-all: cg_solver
+SRCS = main.cpp \
+       matrix_modules/matrix_operations.cpp \
+       matrix_modules/verify_positive_definite_matrix.cpp \
+       LUP/LUP_main.cpp \
+       LUP/LUPFactorization.cpp \
+       LUP/ApplyPermutationMatrix.cpp \
+       LUP/substitution.cpp \
+       SOR/SOR_main.cpp \
+       CG/CG_main.cpp
 
-cg_solver: main.o matrix_operations.o
-	$(CXX) $(CXXFLAGS) -o cg_solver main.o matrix_operations.o
+OBJS = $(SRCS:.cpp=.o)
 
-main.o: main.cpp matrix_operations.h
-	$(CXX) $(CXXFLAGS) -c main.cpp
+all: linear_solvers
 
-matrix_operations.o: matrix_operations.cpp matrix_operations.h
-	$(CXX) $(CXXFLAGS) -c matrix_operations.cpp
+linear_solvers: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o cg_solver
+	rm -f $(OBJS) linear_solvers

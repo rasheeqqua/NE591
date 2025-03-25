@@ -4,23 +4,13 @@
 #include <iomanip>
 #include <chrono>
 #include <cmath>
-#include "matrix_operations.h"
-
-bool isSymmetric(const std::vector<std::vector<double>>& A) {
-    int n = A.size();
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (std::abs(A[i][j] - A[j][i]) > 1e-10) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+#include "matrix_modules/matrix_operations.h"
+#include "matrix_modules/verify_positive_definite_matrix.h"
+#include "LUP/LUP_solver.h"
+#include "SOR/SOR_solver.h"
+#include "CG/CG_solver.h"
 
 int main() {
-    auto start = std::chrono::high_resolution_clock::now();
-
     std::ifstream inFile("input.txt");
     std::ofstream outFile("output.txt");
 
@@ -29,67 +19,138 @@ int main() {
         return 1;
     }
 
-    // Task 1: Write header to output file
-    outFile << "NE 591 - Inlab 10 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, March 21, 2025" << std::endl;
+    // Write header to output file
+    outFile << "NE 591 - Outlab 10 Code" << std::endl;
+    outFile << "Implemented by Hasibul Hossain Rasheeq, March 25, 2025" << std::endl;
     outFile << "------------------------------------------------------" << std::endl << std::endl;
     outFile << "Solve Symmetric Positive Definite Matrix" << std::endl;
-    outFile << "Equation with Conjugate Gradient Method" << std::endl << std::endl;
+    outFile << "Equation with Linear Solvers" << std::endl << std::endl;
 
-    // Task 2: Read input data
+    // Read method flag and SOR weight
+    int methodFlag;
+    double sorWeight;
+    inFile >> methodFlag >> sorWeight;
+
+    // Read stopping criterion and maximum iterations
     double epsilon;
-    int maxIter, n;
+    int maxIter;
+    inFile >> epsilon >> maxIter;
 
-    inFile >> epsilon >> maxIter >> n;
+    // Read matrix order
+    int n;
+    inFile >> n;
 
+    // Read matrix A
     std::vector<std::vector<double>> A(n, std::vector<double>(n));
-    std::vector<double> b(n);
-
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             inFile >> A[i][j];
         }
     }
 
+    // Read vector b
+    std::vector<double> b(n);
     for (int i = 0; i < n; i++) {
         inFile >> b[i];
     }
 
-    // Task 3: Check correctness of input data
+    // Check matrix properties
     bool symmetric = isSymmetric(A);
+    bool diagonallyDominant = isDiagonallyDominant(A);
 
-    if (symmetric) {
-        outFile << "Matrix symmetry checked" << std::endl;
-        outFile << "User must ensure it is positive definite" << std::endl;
-        outFile << "-----------------------------------------" << std::endl << std::endl;
-
-        // Echo input data to output file
-        outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
-        outFile << "matrix is of order: " << n << std::endl;
-        outFile << "Matrix A:" << std::endl;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                outFile << std::scientific << std::setprecision(2) << A[i][j] << " ";
-            }
-            outFile << std::endl;
-        }
-
-        outFile << std::endl << "RHS vector b:" << std::endl;
-        for (int i = 0; i < n; i++) {
-            outFile << std::scientific << std::setprecision(2) << b[i] << " ";
-        }
-        outFile << std::endl << std::endl;
-    } else {
+    if (!symmetric) {
         outFile << "Error: Matrix is not symmetric!" << std::endl;
         return 1;
     }
 
-    // Task 4: Record execution time
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
+    outFile << "Matrix symmetry checked" << std::endl;
+    if (diagonallyDominant) {
+        outFile << "Matrix is diagonally dominant" << std::endl;
+    } else {
+        outFile << "Warning: Matrix is not diagonally dominant" << std::endl;
+    }
+    outFile << "User must ensure it is positive definite" << std::endl;
+    outFile << "-----------------------------------------" << std::endl << std::endl;
 
-    outFile << "Execution time (sec) = " << std::fixed << std::setprecision(4) << elapsed.count() << std::endl;
+    // Echo input data to output file
+    outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
+    outFile << "maximum iterations = " << maxIter << std::endl;
+    outFile << "matrix is of order: " << n << std::endl;
+    outFile << "Matrix A:" << std::endl;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            outFile << std::scientific << std::setprecision(2) << A[i][j] << " ";
+        }
+        outFile << std::endl;
+    }
+
+    outFile << std::endl << "RHS vector b:" << std::endl;
+    for (int i = 0; i < n; i++) {
+        outFile << std::scientific << std::setprecision(2) << b[i] << " ";
+    }
+    outFile << std::endl << std::endl;
+
+    // Solve the system based on method flag
+    std::vector<double> x(n, 0.0);
+
+    // Start the timer
+    std::chrono::duration<double> elapsed;
+    auto start = std::chrono::high_resolution_clock::now();
+
+    if (methodFlag == 0) {
+        // LUP method
+        double maxResidual;
+        bool success = solveLUP(A, b, x, maxResidual);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        if (success) {
+            writeLUPResults(outFile, x, maxResidual);
+        } else {
+            outFile << "Error: LUP factorization failed!" << std::endl;
+        }
+    }
+    else if (methodFlag == 1) {
+        // SOR method
+        int iterations;
+        double residualNorm;
+        bool converged = solveSOR(A, b, x, sorWeight, epsilon, maxIter, iterations, residualNorm);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        writeSORResults(outFile, x, iterations, residualNorm, sorWeight);
+
+        if (!converged) {
+            outFile << "Warning: SOR method did not converge within maximum iterations!" << std::endl;
+        }
+    }
+    else if (methodFlag == 2) {
+        // CG method
+        int iterations;
+        double residualNorm;
+        bool converged = solveCG(A, b, x, epsilon, maxIter, iterations, residualNorm);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        writeCGResults(outFile, x, iterations, residualNorm);
+
+        if (!converged) {
+            outFile << "Warning: CG method did not converge within maximum iterations!" << std::endl;
+        }
+    }
+    else {
+        outFile << "Error: Invalid method flag!" << std::endl;
+        return 1;
+    }
+
+    outFile << "Execution time (sec) = " << std::fixed << std::setprecision(8) << elapsed.count() << std::endl;
 
     inFile.close();
     outFile.close();
