@@ -8,7 +8,9 @@ COMMON_SRCS = matrix_modules/matrix_operations.cpp \
               LUP/ApplyPermutationMatrix.cpp \
               LUP/substitution.cpp \
               SOR/SOR_main.cpp \
-              CG/CG_main.cpp
+              CG/CG_main.cpp \
+              PCG/PCG_main.cpp \
+              PCG/jacobi_preconditioner.cpp
 
 MAIN_SRCS = main.cpp $(COMMON_SRCS)
 PERF_SRCS = performance_test.cpp $(COMMON_SRCS)

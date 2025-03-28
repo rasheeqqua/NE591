@@ -9,6 +9,7 @@
 #include "LUP/LUP_solver.h"
 #include "SOR/SOR_solver.h"
 #include "CG/CG_solver.h"
+#include "PCG/PCG_solver.h"
 
 int main() {
     std::ifstream inFile("input.txt");
@@ -20,8 +21,8 @@ int main() {
     }
 
     // Write header to output file
-    outFile << "NE 591 - Outlab 10 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, March 25, 2025" << std::endl;
+    outFile << "NE 591 - Inlab 11 Code" << std::endl;
+    outFile << "Implemented by Hasibul Hossain Rasheeq, March 28, 2025" << std::endl;
     outFile << "------------------------------------------------------" << std::endl << std::endl;
     outFile << "Solve Symmetric Positive Definite Matrix" << std::endl;
     outFile << "Equation with Linear Solvers" << std::endl << std::endl;
@@ -145,12 +146,28 @@ int main() {
             outFile << "Warning: CG method did not converge within maximum iterations!" << std::endl;
         }
     }
+    else if (methodFlag == 3) {
+        // PCG method with Jacobi preconditioner
+        int iterations;
+        double residualNorm;
+        bool converged = solveJacobiPCG(A, b, x, epsilon, maxIter, iterations, residualNorm);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        writePCGResults(outFile, x, iterations, residualNorm, A);
+
+        if (!converged) {
+            outFile << "Warning: PCG method did not converge within maximum iterations!" << std::endl;
+        }
+    }
     else {
         outFile << "Error: Invalid method flag!" << std::endl;
         return 1;
     }
 
-    outFile << "Execution time (sec) = " << std::fixed << std::setprecision(8) << elapsed.count() << std::endl;
+    outFile << "Execution time (ms) = " << std::fixed << std::setprecision(8) << elapsed.count() * 1000.0 << std::endl;
 
     inFile.close();
     outFile.close();
