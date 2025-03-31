@@ -10,6 +10,7 @@
 #include "SOR/SOR_solver.h"
 #include "CG/CG_solver.h"
 #include "PCG/PCG_solver.h"
+#include "PI/power_iterations.h"
 
 int main() {
     std::ifstream inFile("input.txt");
@@ -19,13 +20,6 @@ int main() {
         std::cerr << "Error opening files!" << std::endl;
         return 1;
     }
-
-    // Write header to output file
-    outFile << "NE 591 - Inlab 11 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, March 28, 2025" << std::endl;
-    outFile << "------------------------------------------------------" << std::endl << std::endl;
-    outFile << "Solve Symmetric Positive Definite Matrix" << std::endl;
-    outFile << "Equation with Linear Solvers" << std::endl << std::endl;
 
     // Read method flag and SOR weight
     int methodFlag;
@@ -49,29 +43,41 @@ int main() {
         }
     }
 
-    // Read vector b
+    // Read vector b (or initial guess for Power Iterations)
     std::vector<double> b(n);
     for (int i = 0; i < n; i++) {
         inFile >> b[i];
     }
 
-    // Check matrix properties
-    bool symmetric = isSymmetric(A);
-    bool diagonallyDominant = isDiagonallyDominant(A);
+    // Write header to output file
+    outFile << "NE 591 - Outlab 11 Code" << std::endl;
+    outFile << "Implemented by Hasibul Hossain Rasheeq, March 31, 2025" << std::endl;
+    outFile << "------------------------------------------------------" << std::endl << std::endl;
 
-    if (!symmetric) {
-        outFile << "Error: Matrix is not symmetric!" << std::endl;
-        return 1;
-    }
-
-    outFile << "Matrix symmetry checked" << std::endl;
-    if (diagonallyDominant) {
-        outFile << "Matrix is diagonally dominant" << std::endl;
+    if (methodFlag == 4) {
+        outFile << "Compute fundamental eigenvector with Power Iterations" << std::endl << std::endl;
     } else {
-        outFile << "Warning: Matrix is not diagonally dominant" << std::endl;
+        // Check matrix properties
+        bool symmetric = isSymmetric(A);
+        bool diagonallyDominant = isDiagonallyDominant(A);
+
+        if (!symmetric) {
+            outFile << "Error: Matrix is not symmetric!" << std::endl;
+            return 1;
+        }
+
+        outFile << "Solve Symmetric Positive Definite Matrix" << std::endl;
+        outFile << "Equation with Linear Solvers" << std::endl << std::endl;
+
+        outFile << "Matrix symmetry checked" << std::endl;
+        if (diagonallyDominant) {
+            outFile << "Matrix is diagonally dominant" << std::endl;
+        } else {
+            outFile << "Warning: Matrix is not diagonally dominant" << std::endl;
+        }
+        outFile << "User must ensure it is positive definite" << std::endl;
+        outFile << "-----------------------------------------" << std::endl << std::endl;
     }
-    outFile << "User must ensure it is positive definite" << std::endl;
-    outFile << "-----------------------------------------" << std::endl << std::endl;
 
     // Echo input data to output file
     outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
@@ -86,7 +92,15 @@ int main() {
         outFile << std::endl;
     }
 
-    outFile << std::endl << "RHS vector b:" << std::endl;
+    outFile << std::endl;
+
+    if (methodFlag == 4) {
+        // For Power Iterations, b is the initial guess
+        outFile << "Initial guess:" << std::endl;
+    } else {
+        outFile << "RHS vector b:" << std::endl;
+    }
+
     for (int i = 0; i < n; i++) {
         outFile << std::scientific << std::setprecision(2) << b[i] << " ";
     }
@@ -160,6 +174,22 @@ int main() {
 
         if (!converged) {
             outFile << "Warning: PCG method did not converge within maximum iterations!" << std::endl;
+        }
+    }
+    else if (methodFlag == 4) {
+        // Power Iterations method
+        int iterations;
+        double error;
+        bool converged = solvePowerIterations(A, b, epsilon, maxIter, x, iterations, error);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        writePowerIterationsResults(outFile, x, iterations, error);
+
+        if (!converged) {
+            outFile << "Warning: Power Iterations method did not converge within maximum iterations!" << std::endl;
         }
     }
     else {

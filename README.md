@@ -1,4 +1,4 @@
-# Outlab 11: Linear System Solvers with Preconditioned Conjugate Gradient
+# Outlab 11: Linear System Solvers with Power Iterations
 
 ## Compilation
 ```bash
@@ -22,65 +22,48 @@ Operational
 - `matrix_modules/verify_positive_definite_matrix.cpp` - Matrix verification implementations
 
 ### Solver Implementations
-- `LUP/LUP_solver.h` - LUP decomposition method declarations
-- `LUP/LUP_main.cpp` - LUP decomposition implementation
-- `LUP/LUPFactorization.cpp` - LUP factorization routines
-- `LUP/ApplyPermutationMatrix.cpp` - Permutation application routines
-- `LUP/substitution.cpp` - Forward and back substitution routines
-- `SOR/SOR_solver.h` - SOR method declarations
-- `SOR/SOR_main.cpp` - SOR method implementation
-- `CG/CG_solver.h` - CG method declarations
-- `CG/CG_main.cpp` - CG method implementation
-- `PCG/PCG_solver.h` - PCG method declarations
-- `PCG/PCG_main.cpp` - PCG method implementation
-- `PCG/jacobi_preconditioner.h` - Jacobi preconditioner declarations
-- `PCG/jacobi_preconditioner.cpp` - Jacobi preconditioner implementation
+- `PI/power_iterations.h` - Power Iterations method declarations
+- `PI/power_iterations.cpp` - Power Iterations method implementation
 
 ### Main Programs
 - `main.cpp` - Main program for solving individual systems
-- `performance_test.cpp` - Program for performance comparison of methods
 
 ## Problem Description
-This program implements and compares four methods for solving linear systems Ax = b where A is symmetric positive definite:
-1. LUP (Lower-Upper decomposition with Pivoting) - direct method
-2. SOR (Successive Over-Relaxation) - iterative method
-3. CG (Conjugate Gradient) - iterative method
-4. PCG (Preconditioned Conjugate Gradient) - iterative method with Jacobi preconditioner
+This program implements and compares five methods:
+1. LUP (Lower-Upper decomposition with Pivoting) - direct method for linear systems
+2. SOR (Successive Over-Relaxation) - iterative method for linear systems
+3. CG (Conjugate Gradient) - iterative method for linear systems
+4. PCG (Preconditioned Conjugate Gradient) - iterative method with Jacobi preconditioner for linear systems
+5. Power Iterations - iterative method for computing the dominant eigenvector
 
 ### Input
 - Input for main solver is read from `input.txt`
-- Format:
-  - Line 1: Flag (0 for LUP, 1 for SOR, 2 for CG, 3 for PCG) and SOR weight parameter
+- Format for Power Iterations (flag 4):
+  - Line 1: Flag (4 for Power Iterations) and unused parameter
   - Line 2: Stopping criterion epsilon, maximum iterations
   - Line 3: Matrix order n
   - Next n lines: Elements of the n×n matrix A
-  - Last line: n elements of the right-hand-side vector b
+  - Last line: n elements of the initial guess vector
 
 ### Output
 - Main solver output is written to `output.txt`
-- Performance test results are written to `performance_results.txt`
-- Input matrices for performance test are written to `input_n*.txt` files
 - Includes:
   - Header with problem description
-  - Verification of matrix properties
   - Echo of input data
-  - Solution information (iterations, residuals)
-  - For PCG, the preconditioner matrix is also displayed
+  - Solution information (iterations, residuals/errors)
   - Execution time
 
-### Performance Testing
-Performance test implements:
-- Testing with matrix sizes n = 32, 64, 128, 512, 1024
-- Generation of SPD matrices
-- Comparison of iteration counts for iterative methods
-- Comparison of execution times across all methods
+### Power Iterations Implementation
+- Computes the dominant eigenvector of a matrix using the power method
+- Uses the L-infinity norm (maximum absolute value) for vector normalization
+- Convergence is determined by the L-infinity norm of the difference between consecutive normalized vectors
+- Algorithm steps:
+  1. Initialize with user-provided initial guess vector
+  2. Normalize using the L-infinity norm
+  3. Iterate: multiply by matrix A, normalize, check convergence
+  4. Return normalized eigenvector and error metrics
+- Input format (flag 4) uses the same structure as other solvers, but the right-hand side vector is interpreted as the initial guess
+- Outputs the final eigenvector, iteration count, and convergence error
 
 ### Limitations
-- Matrix must be symmetric positive definite
-- SOR convergence depends on weight parameter
-- PCG implementation currently uses only Jacobi preconditioner
-
-### The Preconditioned Conjugate Gradient method uses a preconditioner matrix M to improve convergence
-- The Jacobi preconditioner uses the diagonal of A: M = diag(A)
-- PCG typically requires fewer iterations than standard CG for most problems
-- The algorithm is designed to be extensible to other preconditioner types in future
+- Power Iterations computes only the dominant eigenvector and does not explicitly return the eigenvalue
