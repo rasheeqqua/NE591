@@ -6,14 +6,15 @@
 #include <cmath>
 #include <chrono>
 #include <algorithm>
+#include <mpi.h>
 
 // Function declarations for different solver methods
 #include "lup/lup_solver.h"
 #include "point_jacobi/point_jacobi_solver.h"
 #include "gauss_seidel/gauss_seidel_solver.h"
 #include "sor/sor_solver.h"
-//#include "parallel_pj/parallel_pj_solver.h"
-//#include "parallel_gs/parallel_gs_solver.h"
+#include "parallel_pj/parallel_pj_solver.h"
+#include "parallel_gs/parallel_gs_solver.h"
 
 // Structure to hold problem parameters
 struct ProblemParameters {
@@ -37,7 +38,7 @@ struct SolutionResults {
     double memory_usage;                   // Memory usage in MB
 };
 
-// Function to read input parameters
+// Function to read input parameters (by Manager process only)
 bool readInputParameters(const std::string& filename, ProblemParameters& params) {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
@@ -91,10 +92,73 @@ bool readInputParameters(const std::string& filename, ProblemParameters& params)
         return false;
     }
 
+    // Special validation for parallel methods
+    if (params.flag == 4 || params.flag == 5) {
+        // For parallel methods, we need m = n for square grid
+        if (params.m != params.n) {
+            std::cerr << "Error: Parallel methods require m = n (square grid)" << std::endl;
+            return false;
+        }
+    }
+
     return true;
 }
 
-// Function to construct the diffusion matrix
+// Function to broadcast parameters from Manager to Workers
+void broadcastParameters(ProblemParameters& params, int rank) {
+    // Broadcast flag indicating correct input data
+    int valid_input = 1;
+    MPI_Bcast(&valid_input, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    // Broadcast basic parameters
+    MPI_Bcast(&params.flag, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.max_iterations, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.tolerance, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.sor_weight, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.a, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.b, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.m, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.D, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&params.sigma_a, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Allocate q for workers
+    if (rank != 0) {
+        params.q.resize(params.m, std::vector<double>(params.n));
+    }
+
+    // Broadcast q using flattened array
+    std::vector<double> q_flat;
+    if (rank == 0) {
+        q_flat.resize(params.m * params.n);
+        for (int i = 0; i < params.m; i++) {
+            for (int j = 0; j < params.n; j++) {
+                q_flat[i * params.n + j] = params.q[i][j];
+            }
+        }
+    } else {
+        q_flat.resize(params.m * params.n);
+    }
+
+    MPI_Bcast(q_flat.data(), params.m * params.n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Unflatten q for workers
+    if (rank != 0) {
+        for (int i = 0; i < params.m; i++) {
+            for (int j = 0; j < params.n; j++) {
+                params.q[i][j] = q_flat[i * params.n + j];
+            }
+        }
+    }
+}
+
+// Function to broadcast error to all processes
+void broadcastInputError(int rank) {
+    int valid_input = 0;
+    MPI_Bcast(&valid_input, 1, MPI_INT, 0, MPI_COMM_WORLD);
+}
+
+// Function to construct the diffusion matrix (for serial methods)
 void constructDiffusionMatrix(const ProblemParameters& params,
                              std::vector<std::vector<double>>& A,
                              std::vector<double>& b) {
@@ -214,7 +278,7 @@ double estimateMemoryUsage(const ProblemParameters& params, int method_flag) {
     return memory / (1024 * 1024);
 }
 
-// Function to write output
+// Function to write output (Manager process only)
 void writeOutput(const std::string& filename, const ProblemParameters& params, const SolutionResults& results) {
     std::ofstream outputFile(filename);
     if (!outputFile.is_open()) {
@@ -285,97 +349,284 @@ void writeOutput(const std::string& filename, const ProblemParameters& params, c
 
     // Write performance metrics
     outputFile << "Performance Metrics:" << std::endl;
-    outputFile << "  Execution time: " << std::fixed << std::setprecision(6)
+    outputFile << "  Execution time: " << std::fixed << std::setprecision(5)
               << results.execution_time << " ms" << std::endl;
-    outputFile << "  Memory usage: " << std::fixed << std::setprecision(6)
+    outputFile << "  Memory usage: " << std::fixed << std::setprecision(1)
               << results.memory_usage << " Mb" << std::endl << std::endl;
 
     // Write solution
     outputFile << "Scalar Flux Solution:" << std::endl;
-    for (std::size_t i = 0; i < results.phi.size(); i++) {
-        outputFile << "  ";
-        for (std::size_t j = 0; j < results.phi[i].size(); j++) {
-            outputFile << std::scientific << std::setprecision(2) << results.phi[i][j] << " ";
+
+    // For large grid sizes, write to separate file
+    if (params.n > 8) {
+        outputFile << "  (Written to Flux file due to large grid size)" << std::endl;
+
+        std::ofstream fluxFile("Flux");
+        if (fluxFile.is_open()) {
+            for (int i = 0; i <= params.m + 1; i++) {
+                for (int j = 0; j <= params.n + 1; j++) {
+                    fluxFile << i << " " << j << " "
+                             << std::scientific << std::setprecision(6)
+                             << results.phi[i][j] << std::endl;
+                }
+            }
+            fluxFile.close();
+        } else {
+            std::cerr << "Error: Unable to open Flux file for writing" << std::endl;
         }
-        outputFile << std::endl;
+    } else {
+        // Write flux directly to output file for small grids
+        for (size_t i = 0; i < results.phi.size(); i++) {
+            outputFile << "  ";
+            for (size_t j = 0; j < results.phi[i].size(); j++) {
+                outputFile << std::scientific << std::setprecision(2) << results.phi[i][j] << " ";
+            }
+            outputFile << std::endl;
+        }
     }
 
     outputFile.close();
 }
 
 int main() {
+    // Initialize MPI environment
+    MPI_Init(NULL, NULL);
+
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
     std::string inputFile = "input.txt";
     std::string outputFile = "output.txt";
 
-    // Read problem parameters
+    // Initialize problem parameters
     ProblemParameters params;
-    if (!readInputParameters(inputFile, params)) {
+    bool input_valid = true;
+
+    // Manager process reads input
+    if (rank == 0) {
+        input_valid = readInputParameters(inputFile, params);
+
+        // Check if input is valid for parallel methods
+        if (input_valid && (params.flag == 4 || params.flag == 5)) {
+            int sqrt_size = static_cast<int>(std::sqrt(size));
+            if (sqrt_size * sqrt_size != size) {
+                std::cerr << "Error: Number of processes must be a perfect square for parallel methods" << std::endl;
+                input_valid = false;
+            }
+
+            if (params.n % sqrt_size != 0) {
+                std::cerr << "Error: Grid size n must be divisible by sqrt(P) for parallel methods" << std::endl;
+                input_valid = false;
+            }
+        }
+    }
+
+    // Broadcast input validity to all processes
+    MPI_Bcast(&input_valid, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    // Exit if input is invalid
+    if (!input_valid) {
+        MPI_Finalize();
         return 1;
     }
 
-    // Construct diffusion matrix and RHS vector
-    std::vector<std::vector<double>> A;
-    std::vector<double> b;
-    constructDiffusionMatrix(params, A, b);
+    // Broadcast parameters to all processes
+    broadcastParameters(params, rank);
 
     // Initialize solution results
     SolutionResults results;
     results.phi.resize(params.m + 2, std::vector<double>(params.n + 2, 0.0));
 
-    // Solve the system using the specified method
+    // Start timer
     auto start_time = std::chrono::high_resolution_clock::now();
 
+    // Solution vector for serial methods
     std::vector<double> x(params.m * params.n, 0.0);
 
+    // Execute appropriate solver based on flag
     switch (params.flag) {
-        case 0:
-            // LUP method
-            lupSolve(A, b, x);
-            results.iterations = 1;
-            results.final_error = 0.0;
+        case 0: // LUP Decomposition (serial)
+            if (rank == 0) {
+                std::vector<std::vector<double>> A;
+                std::vector<double> b;
+                constructDiffusionMatrix(params, A, b);
+                lupSolve(A, b, x);
+                results.iterations = 1;
+                results.final_error = 0.0;
+            }
             break;
-        case 1:
-            // Point Jacobi method
-            pointJacobiSolve(A, b, x, params.max_iterations, params.tolerance,
-                             results.iterations, results.final_error);
+
+        case 1: // Point Jacobi (serial)
+            if (rank == 0) {
+                std::vector<std::vector<double>> A;
+                std::vector<double> b;
+                constructDiffusionMatrix(params, A, b);
+                pointJacobiSolve(A, b, x, params.max_iterations, params.tolerance,
+                                results.iterations, results.final_error);
+            }
             break;
-        case 2:
-            // Gauss-Seidel method
-            gaussSeidelSolve(A, b, x, params.max_iterations, params.tolerance,
-                            results.iterations, results.final_error);
+
+        case 2: // Gauss-Seidel (serial)
+            if (rank == 0) {
+                std::vector<std::vector<double>> A;
+                std::vector<double> b;
+                constructDiffusionMatrix(params, A, b);
+                gaussSeidelSolve(A, b, x, params.max_iterations, params.tolerance,
+                                results.iterations, results.final_error);
+            }
             break;
-        case 3:
-            // SOR method
-            sorSolve(A, b, x, params.max_iterations, params.tolerance, params.sor_weight,
-                     results.iterations, results.final_error);
+
+        case 3: // SOR (serial)
+            if (rank == 0) {
+                std::vector<std::vector<double>> A;
+                std::vector<double> b;
+                constructDiffusionMatrix(params, A, b);
+                sorSolve(A, b, x, params.max_iterations, params.tolerance, params.sor_weight,
+                        results.iterations, results.final_error);
+            }
             break;
-        /*case 4:
-            // Parallel Point Jacobi method
-            parallelPointJacobiSolve(A, b, x, params.max_iterations, params.tolerance,
-                                    results.iterations, results.final_error);
+
+        case 4: // Parallel Point Jacobi
+            {
+                // Call parallel implementation
+                std::vector<std::vector<double>> local_phi;
+                int local_iterations;
+                double local_error;
+
+                parallelPointJacobiSolve(params, local_phi, local_iterations, local_error);
+
+                // Manager collects results from workers
+                if (rank == 0) {
+                    results.iterations = local_iterations;
+                    results.final_error = local_error;
+
+                    // Collect full solution from all processes
+                    int sqrt_P = static_cast<int>(std::sqrt(size));
+                    int subdomain_size = params.n / sqrt_P;
+
+                    // Copy local solution from manager
+                    for (int i = 1; i <= subdomain_size; i++) {
+                        for (int j = 1; j <= subdomain_size; j++) {
+                            results.phi[i][j] = local_phi[i][j];
+                        }
+                    }
+
+                    // Receive solutions from workers
+                    for (int p = 1; p < size; p++) {
+                        int p_row = p / sqrt_P;
+                        int p_col = p % sqrt_P;
+                        int start_i = p_row * subdomain_size + 1;
+                        int start_j = p_col * subdomain_size + 1;
+
+                        // Create buffer for receiving
+                        std::vector<double> buffer((subdomain_size + 2) * (subdomain_size + 2));
+                        MPI_Recv(buffer.data(), buffer.size(), MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+                        // Copy received data to global solution
+                        for (int i = 1; i <= subdomain_size; i++) {
+                            for (int j = 1; j <= subdomain_size; j++) {
+                                int local_idx = i * (subdomain_size + 2) + j;
+                                results.phi[start_i + i - 1][start_j + j - 1] = buffer[local_idx];
+                            }
+                        }
+                    }
+                } else {
+                    // Workers send their local solutions to manager
+                    std::vector<double> buffer((local_phi.size()) * (local_phi[0].size()));
+                    for (size_t i = 0; i < local_phi.size(); i++) {
+                        for (size_t j = 0; j < local_phi[i].size(); j++) {
+                            buffer[i * local_phi[0].size() + j] = local_phi[i][j];
+                        }
+                    }
+                    MPI_Send(buffer.data(), buffer.size(), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+                }
+            }
             break;
-        case 5:
-            // Parallel Gauss-Seidel method
-            parallelGaussSeidelSolve(A, b, x, params.max_iterations, params.tolerance,
-                                    results.iterations, results.final_error);
-            break;*/
+
+        case 5: // Parallel Gauss-Seidel
+            {
+                // Call parallel implementation
+                std::vector<std::vector<double>> local_phi;
+                int local_iterations;
+                double local_error;
+
+                parallelGaussSeidelSolve(params, local_phi, local_iterations, local_error);
+
+                // Manager collects results from workers
+                if (rank == 0) {
+                    results.iterations = local_iterations;
+                    results.final_error = local_error;
+
+                    // Collect full solution from all processes
+                    int sqrt_P = static_cast<int>(std::sqrt(size));
+                    int subdomain_size = params.n / sqrt_P;
+
+                    // Copy local solution from manager
+                    for (int i = 1; i <= subdomain_size; i++) {
+                        for (int j = 1; j <= subdomain_size; j++) {
+                            results.phi[i][j] = local_phi[i][j];
+                        }
+                    }
+
+                    // Receive solutions from workers
+                    for (int p = 1; p < size; p++) {
+                        int p_row = p / sqrt_P;
+                        int p_col = p % sqrt_P;
+                        int start_i = p_row * subdomain_size + 1;
+                        int start_j = p_col * subdomain_size + 1;
+
+                        // Create buffer for receiving
+                        std::vector<double> buffer((subdomain_size + 2) * (subdomain_size + 2));
+                        MPI_Recv(buffer.data(), buffer.size(), MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+                        // Copy received data to global solution
+                        for (int i = 1; i <= subdomain_size; i++) {
+                            for (int j = 1; j <= subdomain_size; j++) {
+                                int local_idx = i * (subdomain_size + 2) + j;
+                                results.phi[start_i + i - 1][start_j + j - 1] = buffer[local_idx];
+                            }
+                        }
+                    }
+                } else {
+                    // Workers send their local solutions to manager
+                    std::vector<double> buffer((local_phi.size()) * (local_phi[0].size()));
+                    for (size_t i = 0; i < local_phi.size(); i++) {
+                        for (size_t j = 0; j < local_phi[i].size(); j++) {
+                            buffer[i * local_phi[0].size() + j] = local_phi[i][j];
+                        }
+                    }
+                    MPI_Send(buffer.data(), buffer.size(), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+                }
+            }
+            break;
     }
 
+    // Stop timer
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end_time - start_time;
-    results.execution_time = duration.count();
 
-    // Convert solution to grid format
-    results.phi = convertToGrid(x, params.m, params.n);
+    // Only manager process handles final results
+    if (rank == 0) {
+        results.execution_time = duration.count();
 
-    // Calculate maximum residual
-    results.max_residual = calculateMaxResidual(params, results.phi);
+        // For serial methods, convert linear solution to 2D grid
+        if (params.flag <= 3) {
+            results.phi = convertToGrid(x, params.m, params.n);
+        }
 
-    // Estimate memory usage
-    results.memory_usage = estimateMemoryUsage(params, params.flag);
+        // Calculate maximum residual
+        results.max_residual = calculateMaxResidual(params, results.phi);
 
-    // Write output
-    writeOutput(outputFile, params, results);
+        // Estimate memory usage
+        results.memory_usage = estimateMemoryUsage(params, params.flag);
+
+        // Write output
+        writeOutput(outputFile, params, results);
+    }
+
+    // Finalize MPI environment
+    MPI_Finalize();
 
     return 0;
 }
