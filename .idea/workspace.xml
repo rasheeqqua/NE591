@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="7" type="long" />
+    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppFormatterOtherPage" type="string" />
+    <option name="/Default/Housekeeping/RefactoringsMru/RenameRefactoring/DoQuickRename/@EntryValue" value="true" type="bool" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Iteration 2.">
+      <change afterPath="$PROJECT_DIR$/Examples/PI_input.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/PI_output.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/RQ_input.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/RQ_output.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/input.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/output.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/performance_test_input.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/performance_test_output.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PI/power_iterations.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PI/power_iterations.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PI/power_iterations.h" beforeDir="false" afterPath="$PROJECT_DIR$/PI/power_iterations.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/rasheeqqua/NE591.git&quot;,
+    &quot;accountId&quot;: &quot;d8b067a5-a462-4197-b6bb-a46795308e76&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2urD5WP8vphef9H71R8F3ajYLJk" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/hrashee/projects/NE591/Examples",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
+    <layout>
+      <window_info id="Bookmarks" side_tool="true" />
+      <window_info id="Merge Requests" />
+      <window_info id="Commit_Guest" show_stripe_button="false" />
+      <window_info id="Learn" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1760615" />
+      <window_info id="Commit" order="1" weight="0.1760615" />
+      <window_info id="VcsChanges" order="2" weight="0.12473959" />
+      <window_info id="Structure" order="3" side_tool="true" weight="0.12920937" />
+      <window_info id="Pull Requests" order="4" weight="0.12473959" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="TypeScript" />
+      <window_info anchor="bottom" id="Python Packages" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="File Transfer" />
+      <window_info anchor="bottom" id="Vcpkg" />
+      <window_info anchor="bottom" id="clangd" />
+      <window_info anchor="bottom" id="Version Control" order="0" weight="0.3298611" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.3298611" />
+      <window_info active="true" anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" visible="true" weight="0.3298611" />
+      <window_info anchor="bottom" id="Services" order="4" />
+      <window_info anchor="bottom" id="CMake" order="5" />
+      <window_info anchor="bottom" id="Debug" order="6" weight="0.5469361" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.42698827" />
+      <window_info anchor="bottom" id="Build" order="8" weight="0.3303985" />
+      <window_info anchor="bottom" id="Run" order="9" weight="0.33050847" />
+      <window_info anchor="bottom" id="Find" order="10" weight="0.3303985" />
+      <window_info anchor="right" id="make" side_tool="true" />
+      <window_info anchor="right" id="Coverage" side_tool="true" />
+      <window_info anchor="right" id="Python Console" />
+      <window_info anchor="right" id="Notifications" order="0" weight="0.32979503" />
+      <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25" />
+      <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+      <window_info anchor="right" id="Meson" order="5" />
+    </layout>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Examples" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Final implementation without the performance test." />
+      <created>1742997616370</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1742997616370</updated>
+      <workItem from="1742997617694" duration="5585000" />
+      <workItem from="1743113486142" duration="1455000" />
+      <workItem from="1743171346770" duration="2800000" />
+      <workItem from="1743428521141" duration="6559000" />
+      <workItem from="1743633316571" duration="9702000" />
+      <workItem from="1743683487955" duration="3633000" />
+      <workItem from="1743773648076" duration="61000" />
+      <workItem from="1743773718186" duration="4183000" />
+    </task>
+    <task id="LOCAL-00001" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1743002032209</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1743002032209</updated>
+    </task>
+    <task id="LOCAL-00002" summary="- Final implementation.">
+      <option name="closed" value="true" />
+      <created>1743173889386</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1743173889386</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- Added power iterations method.">
+      <option name="closed" value="true" />
+      <created>1743436191738</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1743436191738</updated>
+    </task>
+    <task id="LOCAL-00004" summary="- Refactoring the entire codebase for the course project.&#10;- Implemented LUP, Point-Jacobi, Gauss-Seidel, and SOR methods.&#10;- Implementations of Parallel PJ and Parallel GS are missing.">
+      <option name="closed" value="true" />
+      <created>1743645685157</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1743645685157</updated>
+    </task>
+    <task id="LOCAL-00005" summary="- Added Parallel implementations.">
+      <option name="closed" value="true" />
+      <created>1743680262917</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743680262917</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- Iteration 2.">
+      <option name="closed" value="true" />
+      <created>1743773678418</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1743773678418</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- Final implementation." />
+    <MESSAGE value="- Added power iterations method." />
+    <MESSAGE value="- Refactoring the entire codebase for the course project.&#10;- Implemented LUP, Point-Jacobi, Gauss-Seidel, and SOR methods.&#10;- Implementations of Parallel PJ and Parallel GS are missing." />
+    <MESSAGE value="- Added Parallel implementations." />
+    <MESSAGE value="- Iteration 2." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Iteration 2." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
