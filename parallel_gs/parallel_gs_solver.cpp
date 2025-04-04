@@ -1,12 +1,9 @@
-// parallel_gs/parallel_gs_solver.cpp
 #include "parallel_gs_solver.h"
 #include <cmath>
 #include <algorithm>
 #include <mpi.h>
 #include <iostream>
 
-// Include main.cpp structures
-struct ProblemParameters;
 
 void parallelGaussSeidelSolve(const ProblemParameters& params,
                               std::vector<std::vector<double>>& local_phi,

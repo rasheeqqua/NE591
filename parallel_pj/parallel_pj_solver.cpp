@@ -4,9 +4,6 @@
 #include <mpi.h>
 #include <iostream>
 
-// Include main.cpp structures
-struct ProblemParameters;
-
 void parallelPointJacobiSolve(const ProblemParameters& params,
                              std::vector<std::vector<double>>& local_phi,
                              int& iterations,

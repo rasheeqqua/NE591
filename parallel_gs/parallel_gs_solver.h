@@ -3,9 +3,7 @@
 
 #include <vector>
 #include <mpi.h>
-
-// Forward declaration of ProblemParameters struct
-struct ProblemParameters;
+#include "problem_parameters/problem_parameters.h"
 
 /**
  * Solves the diffusion equation using parallel Red-Black Gauss-Seidel method with MPI

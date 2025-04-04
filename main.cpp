@@ -9,24 +9,13 @@
 #include <mpi.h>
 
 // Function declarations for different solver methods
+#include "problem_parameters/problem_parameters.h"
 #include "lup/lup_solver.h"
 #include "point_jacobi/point_jacobi_solver.h"
 #include "gauss_seidel/gauss_seidel_solver.h"
 #include "sor/sor_solver.h"
 #include "parallel_pj/parallel_pj_solver.h"
 #include "parallel_gs/parallel_gs_solver.h"
-
-// Structure to hold problem parameters
-struct ProblemParameters {
-    int flag;                 // Solution method flag
-    int max_iterations;       // Maximum number of iterations
-    double tolerance;         // Convergence tolerance
-    double sor_weight;        // SOR relaxation parameter
-    double a, b;              // Rectangle dimensions
-    int m, n;                 // Grid dimensions
-    double D, sigma_a;        // Physical parameters
-    std::vector<std::vector<double>> q; // Source distribution
-};
 
 // Structure to hold solution results
 struct SolutionResults {

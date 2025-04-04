@@ -3,9 +3,7 @@
 
 #include <vector>
 #include <mpi.h>
-
-// Forward declaration of ProblemParameters struct
-struct ProblemParameters;
+#include "problem_parameters/problem_parameters.h"
 
 /**
  * Solves the diffusion equation using parallel Point Jacobi method with MPI
