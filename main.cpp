@@ -21,10 +21,10 @@ int main() {
         return 1;
     }
 
-    // Read method flag and SOR weight
+    // Read method flag and eigenvalue computation method or SOR weight
     int methodFlag;
-    double sorWeight;
-    inFile >> methodFlag >> sorWeight;
+    double secondParam;
+    inFile >> methodFlag >> secondParam;
 
     // Read stopping criterion and maximum iterations
     double epsilon;
@@ -50,12 +50,20 @@ int main() {
     }
 
     // Write header to output file
-    outFile << "NE 591 - Outlab 11 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, March 31, 2025" << std::endl;
+    outFile << "NE 591 - Inlab 12 Code" << std::endl;
+    outFile << "Implemented by Hasibul Hossain Rasheeq, April 04, 2025" << std::endl;
     outFile << "------------------------------------------------------" << std::endl << std::endl;
 
-    if (methodFlag == 4) {
-        outFile << "Compute fundamental eigenvector with Power Iterations" << std::endl << std::endl;
+    if (methodFlag == 4 || methodFlag == 5) {
+        outFile << "Compute fundamental eigenvector with Power Iterations" << std::endl;
+        outFile << "Compute fundamental eigenvalue: ";
+        if (methodFlag == 4) {
+            outFile << "PI";
+        } else {
+            outFile << "Rayleigh Quotient";
+        }
+        outFile << std::endl;
+        outFile << "-------------------------------------------------------" << std::endl << std::endl;
     } else {
         // Check matrix properties
         bool symmetric = isSymmetric(A);
@@ -81,8 +89,8 @@ int main() {
 
     // Echo input data to output file
     outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
-    outFile << "maximum iterations = " << maxIter << std::endl;
-    outFile << "matrix is of order: " << n << std::endl;
+    outFile << "maximum iterations = " << maxIter << std::endl << std::endl;
+    outFile << "matrix is of order: " << n << std::endl << std::endl;
     outFile << "Matrix A:" << std::endl;
 
     for (int i = 0; i < n; i++) {
@@ -94,7 +102,7 @@ int main() {
 
     outFile << std::endl;
 
-    if (methodFlag == 4) {
+    if (methodFlag == 4 || methodFlag == 5) {
         // For Power Iterations, b is the initial guess
         outFile << "Initial guess:" << std::endl;
     } else {
@@ -132,13 +140,13 @@ int main() {
         // SOR method
         int iterations;
         double residualNorm;
-        bool converged = solveSOR(A, b, x, sorWeight, epsilon, maxIter, iterations, residualNorm);
+        bool converged = solveSOR(A, b, x, secondParam, epsilon, maxIter, iterations, residualNorm);
 
         // Record execution time
         auto end = std::chrono::high_resolution_clock::now();
         elapsed = end - start;
 
-        writeSORResults(outFile, x, iterations, residualNorm, sorWeight);
+        writeSORResults(outFile, x, iterations, residualNorm, secondParam);
 
         if (!converged) {
             outFile << "Warning: SOR method did not converge within maximum iterations!" << std::endl;
@@ -176,17 +184,51 @@ int main() {
             outFile << "Warning: PCG method did not converge within maximum iterations!" << std::endl;
         }
     }
-    else if (methodFlag == 4) {
+    else if (methodFlag == 4 || methodFlag == 5) {
         // Power Iterations method
         int iterations;
         double error;
-        bool converged = solvePowerIterations(A, b, epsilon, maxIter, x, iterations, error);
+        double eigenvalue;
+        double eigenvalueError;
+        bool useRayleighQuotient = (methodFlag == 5);
+
+        bool converged = solvePowerIterations(A, b, epsilon, maxIter, x, iterations, error,
+                                             eigenvalue, eigenvalueError, useRayleighQuotient);
 
         // Record execution time
         auto end = std::chrono::high_resolution_clock::now();
         elapsed = end - start;
 
         writePowerIterationsResults(outFile, x, iterations, error);
+
+        // Output eigenvalue information
+        outFile << "Eigenvalue computed by ";
+        if (useRayleighQuotient) {
+            outFile << "Rayleigh Quotient" << std::endl;
+        } else {
+            outFile << "Power Iterations" << std::endl;
+        }
+        outFile << "Last iterate of eigenvalue = " << std::scientific << std::setprecision(4)
+                << eigenvalue << std::endl;
+        outFile << "Iterative error in eigenvalue = " << std::scientific << std::setprecision(4)
+                << eigenvalueError << std::endl << std::endl;
+
+        // Compute and output residual vector
+        std::vector<double> Ax = matrix_vector_product(A, x);
+        std::vector<double> lambdaX(n);
+        for (int i = 0; i < n; i++) {
+            lambdaX[i] = eigenvalue * x[i];
+        }
+        std::vector<double> residual = vector_subtract(Ax, lambdaX);
+        double residualNorm = calculate_Linf_norm(residual);
+
+        outFile << "Infinity norm of residual = " << std::scientific << std::setprecision(4)
+                << residualNorm << std::endl;
+        outFile << "Residual vector:" << std::endl;
+        for (int i = 0; i < n; i++) {
+            outFile << std::scientific << std::setprecision(4) << residual[i] << " ";
+        }
+        outFile << std::endl << std::endl;
 
         if (!converged) {
             outFile << "Warning: Power Iterations method did not converge within maximum iterations!" << std::endl;

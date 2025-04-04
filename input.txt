@@ -1,8 +1,13 @@
-4 1.50
+4 3.0
 1E-4 50
+
 4
+
 4 -1 -1 0
 -1 3 0 -1
 -1 0 4 -1
 0 -1 -1 3
+
 1 0 0 0
+
+NOTE: SET THE FLAG TO EITHER `4` OR `5` (4 for Power Iteration and 5 for Rayleigh Quotient).

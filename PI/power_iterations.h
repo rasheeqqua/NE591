@@ -1,3 +1,4 @@
+// power_iterations.h
 #ifndef POWER_ITERATIONS_H
 #define POWER_ITERATIONS_H
 
@@ -12,7 +13,10 @@
  * @param maxIter Maximum number of iterations
  * @param x Resulting eigenvector (output)
  * @param iterations Actual number of iterations performed (output)
- * @param error Final error (output)
+ * @param error Final error in eigenvector (output)
+ * @param eigenvalue Computed eigenvalue (output)
+ * @param eigenvalueError Final error in eigenvalue (output)
+ * @param useRayleighQuotient Flag to select eigenvalue computation method
  * @return true if converged, false if reached max iterations without convergence
  */
 bool solvePowerIterations(const std::vector<std::vector<double>>& A,
@@ -21,7 +25,10 @@ bool solvePowerIterations(const std::vector<std::vector<double>>& A,
                           int maxIter,
                           std::vector<double>& x,
                           int& iterations,
-                          double& error);
+                          double& error,
+                          double& eigenvalue,
+                          double& eigenvalueError,
+                          bool useRayleighQuotient);
 
 /**
  * Write Power Iterations results to output file
@@ -48,5 +55,14 @@ double calculate_Linf_norm(const std::vector<double>& v);
  * @return Normalized vector
  */
 std::vector<double> normalize_Linf(const std::vector<double>& v);
+
+/**
+ * Compute eigenvalue using Rayleigh Quotient
+ * @param A Matrix
+ * @param x Eigenvector
+ * @return Computed eigenvalue
+ */
+double computeRayleighQuotient(const std::vector<std::vector<double>>& A,
+                               const std::vector<double>& x);
 
 #endif // POWER_ITERATIONS_H
