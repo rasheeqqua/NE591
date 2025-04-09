@@ -11,7 +11,8 @@ COMMON_SRCS = matrix_modules/matrix_operations.cpp \
               CG/CG_main.cpp \
               PCG/PCG_main.cpp \
               PCG/jacobi_preconditioner.cpp \
-              PI/power_iterations.cpp
+              PI/power_iterations.cpp \
+              II/inverse_iterations.cpp
 
 MAIN_SRCS = main.cpp $(COMMON_SRCS)
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)

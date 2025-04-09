@@ -2,6 +2,7 @@
 rm -rf ../CG/*.o
 rm -rf ../PCG/*.o
 rm -rf ../PI/*.o
+rm -rf ../II/*.o
 rm -rf ../LUP/*.o
 rm -rf ../matrix_modules/*.o
 rm -rf ../SOR/*.o

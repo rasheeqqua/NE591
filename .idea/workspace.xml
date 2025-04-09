@@ -10,6 +10,7 @@
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="7" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppFormatterOtherPage" type="string" />
     <option name="/Default/Housekeeping/RefactoringsMru/RenameRefactoring/DoQuickRename/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
   </component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
@@ -20,20 +21,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Iteration 2.">
-      <change afterPath="$PROJECT_DIR$/Examples/PI_input.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/PI_output.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/RQ_input.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/RQ_output.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/input.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/output.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/performance_test_input.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/performance_test_output.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PI/power_iterations.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PI/power_iterations.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PI/power_iterations.h" beforeDir="false" afterPath="$PROJECT_DIR$/PI/power_iterations.h" afterDir="false" />
+    <list default="true" id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Inlab 12.">
+      <change afterPath="$PROJECT_DIR$/II/inverse_iterations.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/II/inverse_iterations.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/remove_files.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/remove_files.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,32 +70,32 @@
     <option name="sortByType" value="true" />
     <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/hrashee/projects/NE591/Examples",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/hrashee/projects/NE591&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
     <layout>
       <window_info id="Bookmarks" side_tool="true" />
       <window_info id="Merge Requests" />
       <window_info id="Commit_Guest" show_stripe_button="false" />
       <window_info id="Learn" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1760615" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16142021" />
       <window_info id="Commit" order="1" weight="0.1760615" />
       <window_info id="VcsChanges" order="2" weight="0.12473959" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.12920937" />
@@ -114,7 +110,7 @@
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.3298611" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.3298611" />
-      <window_info active="true" anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" visible="true" weight="0.3298611" />
+      <window_info active="true" anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" visible="true" />
       <window_info anchor="bottom" id="Services" order="4" />
       <window_info anchor="bottom" id="CMake" order="5" />
       <window_info anchor="bottom" id="Debug" order="6" weight="0.5469361" />
@@ -156,7 +152,9 @@
       <workItem from="1743633316571" duration="9702000" />
       <workItem from="1743683487955" duration="3633000" />
       <workItem from="1743773648076" duration="61000" />
-      <workItem from="1743773718186" duration="4183000" />
+      <workItem from="1743773718186" duration="4263000" />
+      <workItem from="1744051959891" duration="716000" />
+      <workItem from="1744158254399" duration="210000" />
     </task>
     <task id="LOCAL-00001" summary="- Final implementation.">
       <option name="closed" value="true" />
@@ -206,7 +204,23 @@
       <option name="project" value="LOCAL" />
       <updated>1743773678418</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- Outlab 12.">
+      <option name="closed" value="true" />
+      <created>1743778115607</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743778115607</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- Inlab 12.">
+      <option name="closed" value="true" />
+      <created>1743778134385</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743778134385</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -241,7 +255,9 @@
     <MESSAGE value="- Refactoring the entire codebase for the course project.&#10;- Implemented LUP, Point-Jacobi, Gauss-Seidel, and SOR methods.&#10;- Implementations of Parallel PJ and Parallel GS are missing." />
     <MESSAGE value="- Added Parallel implementations." />
     <MESSAGE value="- Iteration 2." />
-    <option name="LAST_COMMIT_MESSAGE" value="- Iteration 2." />
+    <MESSAGE value="- Outlab 12." />
+    <MESSAGE value="- Inlab 12." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Inlab 12." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

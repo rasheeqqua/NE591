@@ -1,4 +1,4 @@
-4 3.0
+6 1.0
 1E-4 50
 
 4
@@ -10,4 +10,4 @@
 
 1 0 0 0
 
-NOTE: SET THE FLAG TO EITHER `4` OR `5` (4 for Power Iteration and 5 for Rayleigh Quotient).
+NOTE: SET THE FLAG TO 6 FOR INVERSE ITERATION.

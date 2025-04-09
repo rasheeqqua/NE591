@@ -11,6 +11,7 @@
 #include "CG/CG_solver.h"
 #include "PCG/PCG_solver.h"
 #include "PI/power_iterations.h"
+#include "II/inverse_iterations.h"
 
 int main() {
     std::ifstream inFile("input.txt");
@@ -21,7 +22,7 @@ int main() {
         return 1;
     }
 
-    // Read method flag and eigenvalue computation method or SOR weight
+    // Read method flag and eigenvalue/parameter
     int methodFlag;
     double secondParam;
     inFile >> methodFlag >> secondParam;
@@ -43,15 +44,15 @@ int main() {
         }
     }
 
-    // Read vector b (or initial guess for Power Iterations)
+    // Read vector b (or initial guess for eigenvalue methods)
     std::vector<double> b(n);
     for (int i = 0; i < n; i++) {
         inFile >> b[i];
     }
 
     // Write header to output file
-    outFile << "NE 591 - Inlab 12 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, April 04, 2025" << std::endl;
+    outFile << "NE 591 - Outlab 12 Code" << std::endl;
+    outFile << "Implemented by Hasibul Hossain Rasheeq, April 07, 2025" << std::endl;
     outFile << "------------------------------------------------------" << std::endl << std::endl;
 
     if (methodFlag == 4 || methodFlag == 5) {
@@ -64,7 +65,12 @@ int main() {
         }
         outFile << std::endl;
         outFile << "-------------------------------------------------------" << std::endl << std::endl;
-    } else {
+    }
+    else if (methodFlag == 6) {
+        outFile << "Compute eigenmode with Inverse Iteration" << std::endl;
+        outFile << "------------------------------------------------------" << std::endl << std::endl;
+    }
+    else {
         // Check matrix properties
         bool symmetric = isSymmetric(A);
         bool diagonallyDominant = isDiagonallyDominant(A);
@@ -88,8 +94,12 @@ int main() {
     }
 
     // Echo input data to output file
-    outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
-    outFile << "maximum iterations = " << maxIter << std::endl << std::endl;
+    if (methodFlag == 4 || methodFlag == 5 || methodFlag == 6) {
+        outFile << "stopping criterion on eigen-vector/value = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
+    } else {
+        outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
+    }
+    outFile << "max number of iterations = " << maxIter << std::endl << std::endl;
     outFile << "matrix is of order: " << n << std::endl << std::endl;
     outFile << "Matrix A:" << std::endl;
 
@@ -105,7 +115,12 @@ int main() {
     if (methodFlag == 4 || methodFlag == 5) {
         // For Power Iterations, b is the initial guess
         outFile << "Initial guess:" << std::endl;
-    } else {
+    }
+    else if (methodFlag == 6) {
+        // For Inverse Iteration, b is the initial guess of eigenvector
+        outFile << "Initial guess of eigenvector:" << std::endl;
+    }
+    else {
         outFile << "RHS vector b:" << std::endl;
     }
 
@@ -232,6 +247,50 @@ int main() {
 
         if (!converged) {
             outFile << "Warning: Power Iterations method did not converge within maximum iterations!" << std::endl;
+        }
+    }
+    else if (methodFlag == 6) {
+        // Inverse Iteration method
+        int iterations;
+        double error;
+        double eigenvalue;
+        double eigenvalueError;
+
+        bool converged = solveInverseIterations(A, b, secondParam, epsilon, maxIter, x, iterations, error,
+                                              eigenvalue, eigenvalueError);
+
+        // Record execution time
+        auto end = std::chrono::high_resolution_clock::now();
+        elapsed = end - start;
+
+        writeInverseIterationsResults(outFile, x, iterations, error, secondParam);
+
+        // Output eigenvalue information
+        outFile << "Eigenvalue computed by Power Iterations" << std::endl;
+        outFile << "Last iterate of eigenvalue = " << std::scientific << std::setprecision(4)
+                << eigenvalue << std::endl;
+        outFile << "Iterative error in eigenvalue = " << std::scientific << std::setprecision(4)
+                << eigenvalueError << std::endl << std::endl;
+
+        // Compute and output residual vector
+        std::vector<double> Ax = matrix_vector_product(A, x);
+        std::vector<double> lambdaX(n);
+        for (int i = 0; i < n; i++) {
+            lambdaX[i] = eigenvalue * x[i];
+        }
+        std::vector<double> residual = vector_subtract(Ax, lambdaX);
+        double residualNorm = calculate_Linf_norm(residual);
+
+        outFile << "Infinity norm of residual = " << std::scientific << std::setprecision(4)
+                << residualNorm << std::endl;
+        outFile << "Residual vector:" << std::endl;
+        for (int i = 0; i < n; i++) {
+            outFile << std::scientific << std::setprecision(4) << residual[i] << " ";
+        }
+        outFile << std::endl << std::endl;
+
+        if (!converged) {
+            outFile << "Warning: Inverse Iteration method did not converge within maximum iterations!" << std::endl;
         }
     }
     else {
