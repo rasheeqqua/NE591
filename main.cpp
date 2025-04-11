@@ -1,307 +1,152 @@
+// main.cpp for NE 591 Inlab 13
+// Nonlinear Neutron Diffusion Equation solver using Fixed-Point Iterations
+// April 11, 2025
+
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <iomanip>
-#include <chrono>
 #include <cmath>
-#include "matrix_modules/matrix_operations.h"
-#include "matrix_modules/verify_positive_definite_matrix.h"
-#include "LUP/LUP_solver.h"
-#include "SOR/SOR_solver.h"
-#include "CG/CG_solver.h"
-#include "PCG/PCG_solver.h"
-#include "PI/power_iterations.h"
-#include "II/inverse_iterations.h"
+#include <chrono>
+#include "fpi/fixed_point_iteration.h"
 
 int main() {
-    std::ifstream inFile("input.txt");
-    std::ofstream outFile("output.txt");
+    // Input parameters
+    double epsilon;       // Stopping criterion
+    int maxIterations;    // Maximum number of iterations
+    int n;                // Number of nodes per dimension (excluding boundary)
+    double rho0, beta;    // Linear and nonlinear components of removal term
+    double L;             // Domain side length
 
-    if (!inFile || !outFile) {
-        std::cerr << "Error opening files!" << std::endl;
+    // Calculation variables
+    double h;             // Mesh size
+    double** flux;        // 2D array for flux values
+    int iterations = 0;   // Actual iterations used
+    double error = 0.0;   // Final error achieved
+    double avgFlux = 0.0; // Average flux over domain
+
+    // Read input file
+    std::ifstream inputFile("input.txt");
+    if (!inputFile.is_open()) {
+        std::cerr << "Error: Cannot open input file!" << std::endl;
         return 1;
     }
 
-    // Read method flag and eigenvalue/parameter
-    int methodFlag;
-    double secondParam;
-    inFile >> methodFlag >> secondParam;
+    // Read parameters
+    inputFile >> epsilon >> maxIterations;
+    inputFile >> n;
+    inputFile >> rho0 >> beta;
+    inputFile >> L;
+    inputFile.close();
 
-    // Read stopping criterion and maximum iterations
-    double epsilon;
-    int maxIter;
-    inFile >> epsilon >> maxIter;
-
-    // Read matrix order
-    int n;
-    inFile >> n;
-
-    // Read matrix A
-    std::vector<std::vector<double>> A(n, std::vector<double>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            inFile >> A[i][j];
-        }
-    }
-
-    // Read vector b (or initial guess for eigenvalue methods)
-    std::vector<double> b(n);
-    for (int i = 0; i < n; i++) {
-        inFile >> b[i];
-    }
-
-    // Write header to output file
-    outFile << "NE 591 - Outlab 12 Code" << std::endl;
-    outFile << "Implemented by Hasibul Hossain Rasheeq, April 07, 2025" << std::endl;
-    outFile << "------------------------------------------------------" << std::endl << std::endl;
-
-    if (methodFlag == 4 || methodFlag == 5) {
-        outFile << "Compute fundamental eigenvector with Power Iterations" << std::endl;
-        outFile << "Compute fundamental eigenvalue: ";
-        if (methodFlag == 4) {
-            outFile << "PI";
-        } else {
-            outFile << "Rayleigh Quotient";
-        }
-        outFile << std::endl;
-        outFile << "-------------------------------------------------------" << std::endl << std::endl;
-    }
-    else if (methodFlag == 6) {
-        outFile << "Compute eigenmode with Inverse Iteration" << std::endl;
-        outFile << "------------------------------------------------------" << std::endl << std::endl;
-    }
-    else {
-        // Check matrix properties
-        bool symmetric = isSymmetric(A);
-        bool diagonallyDominant = isDiagonallyDominant(A);
-
-        if (!symmetric) {
-            outFile << "Error: Matrix is not symmetric!" << std::endl;
-            return 1;
-        }
-
-        outFile << "Solve Symmetric Positive Definite Matrix" << std::endl;
-        outFile << "Equation with Linear Solvers" << std::endl << std::endl;
-
-        outFile << "Matrix symmetry checked" << std::endl;
-        if (diagonallyDominant) {
-            outFile << "Matrix is diagonally dominant" << std::endl;
-        } else {
-            outFile << "Warning: Matrix is not diagonally dominant" << std::endl;
-        }
-        outFile << "User must ensure it is positive definite" << std::endl;
-        outFile << "-----------------------------------------" << std::endl << std::endl;
-    }
-
-    // Echo input data to output file
-    if (methodFlag == 4 || methodFlag == 5 || methodFlag == 6) {
-        outFile << "stopping criterion on eigen-vector/value = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
-    } else {
-        outFile << "stopping criterion on residual norm = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
-    }
-    outFile << "max number of iterations = " << maxIter << std::endl << std::endl;
-    outFile << "matrix is of order: " << n << std::endl << std::endl;
-    outFile << "Matrix A:" << std::endl;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            outFile << std::scientific << std::setprecision(2) << A[i][j] << " ";
-        }
-        outFile << std::endl;
-    }
-
-    outFile << std::endl;
-
-    if (methodFlag == 4 || methodFlag == 5) {
-        // For Power Iterations, b is the initial guess
-        outFile << "Initial guess:" << std::endl;
-    }
-    else if (methodFlag == 6) {
-        // For Inverse Iteration, b is the initial guess of eigenvector
-        outFile << "Initial guess of eigenvector:" << std::endl;
-    }
-    else {
-        outFile << "RHS vector b:" << std::endl;
-    }
-
-    for (int i = 0; i < n; i++) {
-        outFile << std::scientific << std::setprecision(2) << b[i] << " ";
-    }
-    outFile << std::endl << std::endl;
-
-    // Solve the system based on method flag
-    std::vector<double> x(n, 0.0);
-
-    // Start the timer
-    std::chrono::duration<double> elapsed;
-    auto start = std::chrono::high_resolution_clock::now();
-
-    if (methodFlag == 0) {
-        // LUP method
-        double maxResidual;
-        bool success = solveLUP(A, b, x, maxResidual);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        if (success) {
-            writeLUPResults(outFile, x, maxResidual);
-        } else {
-            outFile << "Error: LUP factorization failed!" << std::endl;
-        }
-    }
-    else if (methodFlag == 1) {
-        // SOR method
-        int iterations;
-        double residualNorm;
-        bool converged = solveSOR(A, b, x, secondParam, epsilon, maxIter, iterations, residualNorm);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        writeSORResults(outFile, x, iterations, residualNorm, secondParam);
-
-        if (!converged) {
-            outFile << "Warning: SOR method did not converge within maximum iterations!" << std::endl;
-        }
-    }
-    else if (methodFlag == 2) {
-        // CG method
-        int iterations;
-        double residualNorm;
-        bool converged = solveCG(A, b, x, epsilon, maxIter, iterations, residualNorm);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        writeCGResults(outFile, x, iterations, residualNorm);
-
-        if (!converged) {
-            outFile << "Warning: CG method did not converge within maximum iterations!" << std::endl;
-        }
-    }
-    else if (methodFlag == 3) {
-        // PCG method with Jacobi preconditioner
-        int iterations;
-        double residualNorm;
-        bool converged = solveJacobiPCG(A, b, x, epsilon, maxIter, iterations, residualNorm);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        writePCGResults(outFile, x, iterations, residualNorm, A);
-
-        if (!converged) {
-            outFile << "Warning: PCG method did not converge within maximum iterations!" << std::endl;
-        }
-    }
-    else if (methodFlag == 4 || methodFlag == 5) {
-        // Power Iterations method
-        int iterations;
-        double error;
-        double eigenvalue;
-        double eigenvalueError;
-        bool useRayleighQuotient = (methodFlag == 5);
-
-        bool converged = solvePowerIterations(A, b, epsilon, maxIter, x, iterations, error,
-                                             eigenvalue, eigenvalueError, useRayleighQuotient);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        writePowerIterationsResults(outFile, x, iterations, error);
-
-        // Output eigenvalue information
-        outFile << "Eigenvalue computed by ";
-        if (useRayleighQuotient) {
-            outFile << "Rayleigh Quotient" << std::endl;
-        } else {
-            outFile << "Power Iterations" << std::endl;
-        }
-        outFile << "Last iterate of eigenvalue = " << std::scientific << std::setprecision(4)
-                << eigenvalue << std::endl;
-        outFile << "Iterative error in eigenvalue = " << std::scientific << std::setprecision(4)
-                << eigenvalueError << std::endl << std::endl;
-
-        // Compute and output residual vector
-        std::vector<double> Ax = matrix_vector_product(A, x);
-        std::vector<double> lambdaX(n);
-        for (int i = 0; i < n; i++) {
-            lambdaX[i] = eigenvalue * x[i];
-        }
-        std::vector<double> residual = vector_subtract(Ax, lambdaX);
-        double residualNorm = calculate_Linf_norm(residual);
-
-        outFile << "Infinity norm of residual = " << std::scientific << std::setprecision(4)
-                << residualNorm << std::endl;
-        outFile << "Residual vector:" << std::endl;
-        for (int i = 0; i < n; i++) {
-            outFile << std::scientific << std::setprecision(4) << residual[i] << " ";
-        }
-        outFile << std::endl << std::endl;
-
-        if (!converged) {
-            outFile << "Warning: Power Iterations method did not converge within maximum iterations!" << std::endl;
-        }
-    }
-    else if (methodFlag == 6) {
-        // Inverse Iteration method
-        int iterations;
-        double error;
-        double eigenvalue;
-        double eigenvalueError;
-
-        bool converged = solveInverseIterations(A, b, secondParam, epsilon, maxIter, x, iterations, error,
-                                              eigenvalue, eigenvalueError);
-
-        // Record execution time
-        auto end = std::chrono::high_resolution_clock::now();
-        elapsed = end - start;
-
-        writeInverseIterationsResults(outFile, x, iterations, error, secondParam);
-
-        // Output eigenvalue information
-        outFile << "Eigenvalue computed by Power Iterations" << std::endl;
-        outFile << "Last iterate of eigenvalue = " << std::scientific << std::setprecision(4)
-                << eigenvalue << std::endl;
-        outFile << "Iterative error in eigenvalue = " << std::scientific << std::setprecision(4)
-                << eigenvalueError << std::endl << std::endl;
-
-        // Compute and output residual vector
-        std::vector<double> Ax = matrix_vector_product(A, x);
-        std::vector<double> lambdaX(n);
-        for (int i = 0; i < n; i++) {
-            lambdaX[i] = eigenvalue * x[i];
-        }
-        std::vector<double> residual = vector_subtract(Ax, lambdaX);
-        double residualNorm = calculate_Linf_norm(residual);
-
-        outFile << "Infinity norm of residual = " << std::scientific << std::setprecision(4)
-                << residualNorm << std::endl;
-        outFile << "Residual vector:" << std::endl;
-        for (int i = 0; i < n; i++) {
-            outFile << std::scientific << std::setprecision(4) << residual[i] << " ";
-        }
-        outFile << std::endl << std::endl;
-
-        if (!converged) {
-            outFile << "Warning: Inverse Iteration method did not converge within maximum iterations!" << std::endl;
-        }
-    }
-    else {
-        outFile << "Error: Invalid method flag!" << std::endl;
+    // Verify input parameters
+    if (epsilon <= 0 || maxIterations <= 0 || n <= 0 || L <= 0) {
+        std::cerr << "Error: Invalid input parameters!" << std::endl;
         return 1;
     }
 
-    outFile << "Execution time (ms) = " << std::fixed << std::setprecision(8) << elapsed.count() * 1000.0 << std::endl;
+    // Calculate mesh size
+    h = L / (n + 1);
 
-    inFile.close();
-    outFile.close();
+    // Allocate memory for flux array (including boundary nodes)
+    flux = new double*[n+2];
+    for (int i = 0; i < n+2; i++) {
+        flux[i] = new double[n+2];
+        // Initialize with zeros (including boundary)
+        for (int j = 0; j < n+2; j++) {
+            flux[i][j] = 0.0;
+        }
+    }
+
+    // Initialize interior nodes with initial guess = 1.0
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            flux[i][j] = 1.0;
+        }
+    }
+
+    // Start timer
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    // Call fixed-point iteration solver
+    fixedPointIteration(flux, n, h, rho0, beta, epsilon, maxIterations, iterations, error);
+
+    // End timer
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    double execTime = duration.count() / 1000.0; // Convert to milliseconds
+
+    // Calculate average flux
+    double sum = 0.0;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            sum += flux[i][j];
+        }
+    }
+    avgFlux = sum / (n * n);
+
+    // Write output file
+    std::ofstream outputFile("output.txt");
+    if (!outputFile.is_open()) {
+        std::cerr << "Error: Cannot open output file!" << std::endl;
+        return 1;
+    }
+
+    // Header information
+    outputFile << "NE 591 Inlab 13 Code" << std::endl;
+    outputFile << "Implemented by Hasibul H. Rasheeq, April 11, 2025" << std::endl;
+    outputFile << "-------------------------------------------------" << std::endl << std::endl;
+
+    outputFile << "Solve 2D Neutron Diffusion Nonlinear Equation with Fixed-Point Iterations" << std::endl;
+    outputFile << "-------------------------------------------------------------------------" << std::endl << std::endl;
+
+    // Echo input parameters
+    outputFile << "Number of nodes/dimension = " << n << std::endl;
+    outputFile << "Linear removal term in diffusion equation = " << std::scientific << std::setprecision(2) << rho0 << std::endl;
+    outputFile << "Nonlinear removal term = " << std::scientific << std::setprecision(2) << beta << std::endl;
+    outputFile << "Domain-side length = " << std::scientific << std::setprecision(2) << L << std::endl;
+    outputFile << "Maximum number of iterations = " << maxIterations << std::endl;
+    outputFile << "Stopping criterion = " << std::scientific << std::setprecision(2) << epsilon << std::endl;
+    outputFile << "-----------------------------------------------------" << std::endl << std::endl;
+
+    // Results of iterations
+    outputFile << "Iterations converged in = " << iterations << " iterations" << std::endl;
+    outputFile << "Iterative error = " << std::scientific << std::setprecision(4) << error << std::endl << std::endl;
+
+    outputFile << "The scalar flux obtained from the last iterate: in file `Flux`" << std::endl;
+    outputFile << "--------------------------------------------------------------" << std::endl << std::endl;
+
+    // Summary
+    outputFile << "Summary of calculation:" << std::endl;
+    outputFile << "nodes, removal, beta = " << n << ", " << std::scientific << std::setprecision(2) << rho0 << " " << beta << std::endl;
+    outputFile << "Domain-side length = " << std::scientific << std::setprecision(2) << L << std::endl;
+    outputFile << "Iters, Average flux = " << iterations << ", " << std::scientific << std::setprecision(4) << avgFlux << std::endl << std::endl;
+
+    // Execution time
+    outputFile << "Execution time (ms) = " << std::fixed << std::setprecision(8) << execTime << std::endl;
+
+    outputFile.close();
+
+    // Write flux file
+    std::ofstream fluxFile("Flux");
+    if (!fluxFile.is_open()) {
+        std::cerr << "Error: Cannot open Flux file!" << std::endl;
+        return 1;
+    }
+
+    // Write flux values in specified format
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            fluxFile << i << " " << j << " " << std::scientific << std::setprecision(6) << flux[i][j] << std::endl;
+        }
+    }
+
+    fluxFile.close();
+
+    // Free allocated memory
+    for (int i = 0; i < n+2; i++) {
+        delete[] flux[i];
+    }
+    delete[] flux;
 
     return 0;
 }

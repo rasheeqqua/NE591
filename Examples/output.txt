@@ -1,0 +1,27 @@
+NE 591 Inlab 13 Code
+Implemented by Hasibul H. Rasheeq, April 11, 2025
+-------------------------------------------------
+
+Solve 2D Neutron Diffusion Nonlinear Equation with Fixed-Point Iterations
+-------------------------------------------------------------------------
+
+Number of nodes/dimension = 4
+Linear removal term in diffusion equation = 1.00e+00
+Nonlinear removal term = 5.00e-01
+Domain-side length = 1.00e+00
+Maximum number of iterations = 90000
+Stopping criterion = 1.00e-09
+-----------------------------------------------------
+
+Iterations converged in = 97 iterations
+Iterative error = 9.8095e-10
+
+The scalar flux obtained from the last iterate: in file `Flux`
+--------------------------------------------------------------
+
+Summary of calculation:
+nodes, removal, beta = 4, 1.00e+00 5.00e-01
+Domain-side length = 1.00e+00
+Iters, Average flux = 97, 4.1210e-02
+
+Execution time (ms) = 0.02100000
