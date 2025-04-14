@@ -1,13 +1,13 @@
-// main.cpp for NE 591 Inlab 13
-// Nonlinear Neutron Diffusion Equation solver using Fixed-Point Iterations
-// April 11, 2025
+// main.cpp for NE 591 Outlab 13
+// Nonlinear Neutron Diffusion Equation solver using Newton's Iterations
+// April 13, 2025
 
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <cmath>
 #include <chrono>
-#include "fpi/fixed_point_iteration.h"
+#include "newton/newton_iteration.h"
 
 int main() {
     // Input parameters
@@ -25,7 +25,7 @@ int main() {
     double avgFlux = 0.0; // Average flux over domain
 
     // Read input file
-    std::ifstream inputFile("input.txt");
+    std::ifstream inputFile("scripts/input.txt");
     if (!inputFile.is_open()) {
         std::cerr << "Error: Cannot open input file!" << std::endl;
         return 1;
@@ -67,8 +67,8 @@ int main() {
     // Start timer
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    // Call fixed-point iteration solver
-    fixedPointIteration(flux, n, h, rho0, beta, epsilon, maxIterations, iterations, error);
+    // Call Newton iteration solver
+    newtonIteration(flux, n, h, rho0, beta, epsilon, maxIterations, iterations, error);
 
     // End timer
     auto endTime = std::chrono::high_resolution_clock::now();
@@ -85,18 +85,18 @@ int main() {
     avgFlux = sum / (n * n);
 
     // Write output file
-    std::ofstream outputFile("output.txt");
+    std::ofstream outputFile("scripts/output.txt");
     if (!outputFile.is_open()) {
         std::cerr << "Error: Cannot open output file!" << std::endl;
         return 1;
     }
 
     // Header information
-    outputFile << "NE 591 Inlab 13 Code" << std::endl;
-    outputFile << "Implemented by Hasibul H. Rasheeq, April 11, 2025" << std::endl;
+    outputFile << "NE 591 Outlab 13 Code" << std::endl;
+    outputFile << "Implemented by Hasibul H. Rasheeq, April 13, 2025" << std::endl;
     outputFile << "-------------------------------------------------" << std::endl << std::endl;
 
-    outputFile << "Solve 2D Neutron Diffusion Nonlinear Equation with Fixed-Point Iterations" << std::endl;
+    outputFile << "Solve 2D Neutron Diffusion Nonlinear Equation with Newton Iterations" << std::endl;
     outputFile << "-------------------------------------------------------------------------" << std::endl << std::endl;
 
     // Echo input parameters
@@ -109,7 +109,7 @@ int main() {
     outputFile << "-----------------------------------------------------" << std::endl << std::endl;
 
     // Results of iterations
-    outputFile << "Iterations converged in = " << iterations << " iterations" << std::endl;
+    outputFile << "Iterations converged in = " << iterations << " Newton iterations" << std::endl;
     outputFile << "Iterative error = " << std::scientific << std::setprecision(4) << error << std::endl << std::endl;
 
     outputFile << "The scalar flux obtained from the last iterate: in file `Flux`" << std::endl;
@@ -127,7 +127,7 @@ int main() {
     outputFile.close();
 
     // Write flux file
-    std::ofstream fluxFile("Flux");
+    std::ofstream fluxFile("scripts/Flux");
     if (!fluxFile.is_open()) {
         std::cerr << "Error: Cannot open Flux file!" << std::endl;
         return 1;

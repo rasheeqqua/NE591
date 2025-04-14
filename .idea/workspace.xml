@@ -20,44 +20,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Inverse iteration implementation done.">
-      <change afterPath="$PROJECT_DIR$/Examples/Flux" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/input.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/output.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fpi/fixed_point_iteration.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fpi/fixed_point_iteration.h" afterDir="false" />
+    <list default="true" id="b37185f7-6b45-46a6-8f3c-61c897dd3b97" name="Changes" comment="- Final Inlab done.">
+      <change afterPath="$PROJECT_DIR$/matrix/lu_factorization.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matrix/lu_factorization.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/newton/newton_iteration.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/newton/newton_iteration.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CG/CG_main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CG/CG_solver.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/PI_input.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/PI_output.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/RQ_input.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/RQ_output.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/II/inverse_iterations.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/II/inverse_iterations.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LUP/ApplyPermutationMatrix.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LUP/LUPFactorization.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LUP/LUP_main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LUP/LUP_solver.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LUP/substitution.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PCG/PCG_main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PCG/PCG_solver.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PCG/jacobi_preconditioner.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PCG/jacobi_preconditioner.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PI/power_iterations.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PI/power_iterations.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOR/SOR_main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOR/SOR_solver.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/input.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matrix_modules/matrix_operations.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matrix_modules/matrix_operations.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matrix_modules/verify_positive_definite_matrix.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matrix_modules/verify_positive_definite_matrix.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/performance_test.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/remove_files.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/submit.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/submit.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -109,7 +80,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "FinalInlab",
-    "last_opened_file_path": "/home/hrashee/projects/NE591/Examples",
+    "last_opened_file_path": "/home/hrashee/projects/NE591",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -124,8 +95,8 @@
       <window_info id="Merge Requests" />
       <window_info id="Commit_Guest" show_stripe_button="false" />
       <window_info id="Learn" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.15409955" />
-      <window_info id="Commit" order="1" weight="0.16142021" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1863104" />
+      <window_info id="Commit" order="1" weight="0.15409955" />
       <window_info id="VcsChanges" order="2" weight="0.12473959" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.12920937" />
       <window_info id="Pull Requests" order="4" weight="0.12473959" />
@@ -139,7 +110,7 @@
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.3298611" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.3298611" />
-      <window_info anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" weight="0.28958333" />
+      <window_info active="true" anchor="bottom" x="259" y="156" width="1080" height="595" id="Terminal" maximized="true" order="3" visible="true" />
       <window_info anchor="bottom" id="Services" order="4" />
       <window_info anchor="bottom" id="CMake" order="5" />
       <window_info anchor="bottom" id="Debug" order="6" weight="0.5469361" />
@@ -163,6 +134,7 @@
       <recent name="$PROJECT_DIR$/Examples" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/matrix" />
       <recent name="$PROJECT_DIR$/scripts" />
     </key>
   </component>
@@ -184,7 +156,8 @@
       <workItem from="1743773718186" duration="4263000" />
       <workItem from="1744051959891" duration="716000" />
       <workItem from="1744158254399" duration="1236000" />
-      <workItem from="1744380477009" duration="2288000" />
+      <workItem from="1744380477009" duration="2341000" />
+      <workItem from="1744584099690" duration="4882000" />
     </task>
     <task id="LOCAL-00001" summary="- Final implementation.">
       <option name="closed" value="true" />
@@ -258,7 +231,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744158852090</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="- Final Inlab done.">
+      <option name="closed" value="true" />
+      <created>1744382794197</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744382794197</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,7 +277,8 @@
     <MESSAGE value="- Outlab 12." />
     <MESSAGE value="- Inlab 12." />
     <MESSAGE value="- Inverse iteration implementation done." />
-    <option name="LAST_COMMIT_MESSAGE" value="- Inverse iteration implementation done." />
+    <MESSAGE value="- Final Inlab done." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Final Inlab done." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -11,5 +11,4 @@
 module load openmpi-gcc
 
 # Run the tests with different process counts
-cd ..
 ./solver
